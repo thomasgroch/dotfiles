@@ -1,0 +1,19 @@
+---
+###############################################################################
+# for dnscrypt-proxy role                                                     #
+###############################################################################
+enable_dnscrypt_proxy:             false
+
+###############################################################################
+# for all roles doing actions for user                                        #
+###############################################################################
+username:                          "{{ansible_user|default(lookup('env', 'USER')) }}"
+userhome:                          "{{ lookup('env','HOME') }}"
+
+telegram_chat_id: "6721933746"
+telegram_token: "6920636205:AAEVlLX5JTJY9NjMuRg1-5KDySdzgPBPJS0"
+upstream: https://github.com/homeofficehost/dotfiles
+repo_dir: "/home/{{ username }}/.bare-dotfiles/"
+work_dir: "/home/{{ username }}/"
+ansible_cron_hour: "*"
+ansible_cron_minute: "*/5"

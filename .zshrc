@@ -137,7 +137,8 @@ SAVEHIST="${HISTSIZE}"
 # source <(npx --shell-auto-fallback zsh)
 
 # Advanced Tab completion
-autoload -Uz compinit && compinit
+# autoload -Uz compinit && compinit
+
 # Now can be use code that calls compdef
 # [ -z "$TMUX" ] && { exec /usr/local/bin/tmux -CC new-session -A -s main && exit;}
 # The -A flag makes new-session behave like
@@ -177,32 +178,32 @@ setopt list_ambiguous
 # [ $ZSH_EVAL_CONTEXT = toplevel ] && npm $@
 
 
-if test -z $GOPASSCMD; then
-   # allows to source zshrc twice
-   export GOPASSCMD=$(which gopass)
+# if test -z $GOPASSCMD; then
+#    # allows to source zshrc twice
+#    export GOPASSCMD=$(which gopass)
 
-	[ -n $GOPASSCMD ] && [ -d PASSWORD_STORE_DIR ] && source <($GOPASSCMD completion zsh | head -n -1 | tail -n +2)
-	compdef _gopass gopass
-fi
+# 	[ -n $GOPASSCMD ] && [ -d PASSWORD_STORE_DIR ] && source <($GOPASSCMD completion zsh | head -n -1 | tail -n +2)
+# 	compdef _gopass gopass
+# fi
 
-alias zsh_is_loading="zsh -o SOURCE_TRACE"
+# alias zsh_is_loading="zsh -o SOURCE_TRACE"
 
-if [ -x "$(command -v rbenv)" ]; then
-	# make rbenv load automatically when open Terminal
-	eval "$(rbenv init -)"
-fi
+# if [ -x "$(command -v rbenv)" ]; then
+# 	# make rbenv load automatically when open Terminal
+# 	eval "$(rbenv init -)"
+# fi
 
-if [ -x "$(command -v pyenv)" ]; then
-	eval "$(pyenv init -)"
-fi
+# if [ -x "$(command -v pyenv)" ]; then
+# 	eval "$(pyenv init -)"
+# fi
 
-if [ -x "$(command -v starship)" ]; then
-	eval "$(starship init zsh)"
-fi
+# if [ -x "$(command -v starship)" ]; then
+# 	eval "$(starship init zsh)"
+# fi
 
-if [ -x "$(command -v colorls)" ]; then
-	source $(dirname $(gem which colorls))/tab_complete.sh
-fi
+# if [ -x "$(command -v colorls)" ]; then
+# 	source $(dirname $(gem which colorls))/tab_complete.sh
+# fi
 
 
 

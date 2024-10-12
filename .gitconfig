@@ -297,5 +297,9 @@
 	smudge = git-lfs smudge -- %f
 	process = git-lfs filter-process
 	required = true
-# [fetch]
-# 	recurseSubmodules = true
+[fetch]
+ 	recurseSubmodules = true
+[clone]
+    recurseSubmodules = true
+[submodule]
+    fetchJobs = 5

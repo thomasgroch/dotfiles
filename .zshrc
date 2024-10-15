@@ -2,18 +2,14 @@
 # Uncomment for speed debug
 # zmodload zsh/zprof
 
-#asd
 
 ### EXPORT
 export ZSH=$HOME/.oh-my-zsh
-export ZSH_CUSTOM=$HOME/.oh-my-zsh-custom # Default is $ZSH/custom
+export ZSH_CUSTOM=$HOME/.oh-my-zsh-custom/ # Default is $ZSH/custom
 export TERM="xterm-256color"                      # getting proper colors
 export HISTORY_IGNORE="(ls|cd|pwd|exit|sudo reboot|history|cd -|cd ..)"
 export EDITOR="emacsclient -t -a ''"              # $EDITOR use Emacs in terminal
 export VISUAL="emacsclient -c -a emacs"           # $VISUAL use Emacs in GUI mode
-
-export ZSH_THEME="robbyrussell"
-# export ZSH_THEME="spaceship"
 
 # Set to this to use case-sensitive completion
 export CASE_SENSITIVE="false"
@@ -74,11 +70,11 @@ esac
 # Which plugins would you like to load? (plugins can be found in ~/oh-my-zsh/plugins/*)
 # Example format: plugins=(rails git textmate ruby lighthouse)
 plugins=(git)
-# plugins+=(ssh-agent)
+plugins+=(ssh-agent)
 plugins+=(gpg-agent)
 plugins+=(gnu-utils)
 plugins+=(pass)
-# plugins+=(k)
+plugins+=(k)
 plugins+=(yarn)
 # plugins+=(gitfast) # heavy load
 plugins+=(fasd)
@@ -86,7 +82,7 @@ plugins+=(git-extras)
 plugins+=(sudo)
 # plugins+=(composer)
 plugins+=(docker)
-# plugins+=(docker-machine)
+plugins+=(docker-machine)
 plugins+=(laravel5)
 plugins+=(sublime)
 plugins+=(httpie)
@@ -99,10 +95,10 @@ plugins+=(colorize)
 plugins+=(history)
 plugins+=(cp)
 plugins+=(tmuxinator)
-# plugins+=(zsh-z)
-# plugins+=(zsh-autosuggestions)
-# plugins+=(zsh-completions)
-# plugins+=(zsh-syntax-highlighting)
+plugins+=(zsh-z)
+plugins+=(zsh-autosuggestions)
+plugins+=(zsh-completions)
+plugins+=(zsh-syntax-highlighting)
 if [[ "$OS" == "Linux" ]]; then
 	plugins+=(archlinux)
 fi

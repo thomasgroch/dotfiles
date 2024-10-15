@@ -2,7 +2,7 @@
 # Uncomment for speed debug
 # zmodload zsh/zprof
 
-# asd test
+# asd test2
 
 ### EXPORT
 export ZSH=$HOME/.oh-my-zsh

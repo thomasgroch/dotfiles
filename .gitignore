@@ -16,7 +16,7 @@
 .hooks
 Library/
 .password-store/
-.bare-dotfiles/
+.dotfiles-bare/
 .dotfiles/
 company/
 dev/

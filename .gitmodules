@@ -13,3 +13,6 @@
 [submodule ".oh-my-zsh/custom"]
 	path = .oh-my-zsh/custom
 	url = https://github.com/thomasgroch/oh-my-zsh-custom.git
+[submodule ".oh-my-zsh-custom/themes/spaceship-prompt"]
+	path = .oh-my-zsh-custom/themes/spaceship-prompt
+	url = https://github.com/denysdovhan/spaceship-prompt.git

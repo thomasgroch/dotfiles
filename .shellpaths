@@ -19,6 +19,7 @@ export PKG_CONFIG_PATH="/usr/local/opt/libffi/lib/pkgconfig"
 if [[ "$OS" == "Linux" ]]; then
 	export PATH=/home/linuxbrew/.linuxbrew/bin:$PATH
 fi
+export PATH=$PATH:.cargo/bin
 
 # PHP
 export PATH=$PATH:$HOME/.composer/vendor/bin

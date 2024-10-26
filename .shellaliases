@@ -1,24 +1,22 @@
 #!/bin/sh
 
-# find lines only in file1
+# Funções para comparação de arquivos
 function only_left() {
-	comm -23 <(sort <(grep '^[^#]' $1)) <(sort <(grep '^[^#]' $2))
+    comm -23 <(sort <(grep '^[^#]' $1)) <(sort <(grep '^[^#]' $2))
 }
-# find lines only in file2
 function only_right() {
-	comm -13 <(sort <(grep '^[^#]' $1)) <(sort <(grep '^[^#]' $2))
+    comm -13 <(sort <(grep '^[^#]' $1)) <(sort <(grep '^[^#]' $2))
 }
-# find lines common to both files
 function common_to_both() {
-	comm -12 <(sort <(grep '^[^#]' $1)) <(sort <(grep '^[^#]' $2))
+    comm -12 <(sort <(grep '^[^#]' $1)) <(sort <(grep '^[^#]' $2))
 }
 function uncommon_left() {
-	common_to_both $1 $2 > asd
-	only_left $1 asd
+    common_to_both $1 $2 > asd
+    only_left $1 asd
 }
 function uncommon_right() {
-	common_to_both $1 $2 > asd
-	only_right $1 asd
+    common_to_both $1 $2 > asd
+    only_right $1 asd
 }
 
 function pass_insert(){
@@ -30,472 +28,74 @@ expect {
 expect eof
 EOF
 }
-###############################################################################
-# Development section
-###############################################################################
-alias getlogos='for t in $(cat techs); do echo -e "${t}\n";curl -s https://logosear.ch/api/search.json\?q\=$t\&max\=48 | jq .results[].url -r >> logolist; done'
-alias getlogos.download='aria2c --max-connection-per-server=16 --min-split-size=1M  --input-file=logolist'
-
-# linux xorg copy/paste implementation - mirroring the macos commands
-alias pbcopy='xclip -selection clipboard'
-alias pbpaste='xclip -selection clipboard -o'
-
-# pipe the destination machines clipboard to local clipboard
-alias osxnetwork-paste='ssh OSX_MACHINENAME.local pbpaste | pbcopy'
-
-# pipe the local clipboard to the destination android device using termux sshd and termux-api
-alias android-paste='pbpaste | ssh android.local termux-clipboard-set'
-
-
-
-alias vps="mosh --ssh='ssh -C -i ~/.ssh/tgroch_id_rsa' root@78.47.130.144 bash"
-
-alias findd="fd $@"
-
-# https://dev.to/maxpou/git-cheat-sheet-advanced-3a17
-# ✔ Custom commits
-# # Edit last commit
-# git commit --amend -m "A better message"
-
-# # Add something to the last commit without writing message again
-# git add . && git commit --amend --no-edit
-
-# # empty commit - can be useful to re-trigger CI build...
-# git commit --allow-empty -m "chore: re-trigger build"
-
-alias lg="lazygit"
-alias hn="hackernews_tui"
-alias git_branch="git checkout -b $@ > /dev/null 2>&1 || git checkout $@"
-alias new_feature="git_branch features/$@"
-alias new_hot_fix="git_branch hot-fixes/$@"
-alias new_patch="git_branch patchs/$@"
 
 function sync_all(){
-	rsync -rtavuc --delete --progress ${1}/.[^.]* ${2}
+    rsync -rtavuc --delete --progress ${1}/.[^.]* ${2}
 }
-alias youtube="rm ~/.config/mps-youtube/cache_py_* 2>&1 >/dev/null; mpsyt"
-alias s="sublimetext"
-alias weather="curl -s 'http://wttr.in/Florianopolis?lang=pt'"
-alias weather2="curl -s 'http://v2.wttr.in/Florianopolis?lang=pt'"
-alias tempo="weather"
-alias tempo2="weather2"
-alias qrcode="curl qrenco.de/$@"
-
-alias hollywood='docker run --rm -it bcbcarl/hollywood'
-alias browser='docker run --rm -it browsh/browsh:latest'
-alias audit_this_site='docker run --rm -it trailofbits/twa -vw '
-alias nogiveup="curl -s -L https://raw.githubusercontent.com/keroserene/rickrollrc/master/roll.sh | bash"
-alias starwars="telnet towel.blinkenlights.nl"
-alias world="telnet mapscii.me"
-alias parrotdance="curl parrot.live"
-alias criptorates="curl rate.sx"
-alias zsh.debug="zsh -xv"
-alias neofetch="neofetch --config none"
-
-# https://quadpoint.org/articles/irssi/
-# alias irc="screen -r $(screen -ls | sed -ne 's/[[:space:]]//' -ne 's/\((Detached)\|(Multi, detached)\|(Multi, attached)\)// p') || ! test -z $(screen -ls | sed -ne 's/[[:space:]]//' -ne 's/\((Attached)\)// p') || screen -S irc irssi"
-alias irc="screen irssi"
-
-# For HTTP connection set the following alias:
-alias dockerx="docker -H=174.138.49.215:2375"
-
-# Ngrok share with site parameter
-# usage: share_webapp
-share_webapp() {
-	local localHostName="${$(pwd)##*/}"
-	ngrok http -subdomain devgiga \
-			   -host-header=rewrite $localHostName:80
-}
-dot_link() {
-	mv $1 $MY_DOTFILES/homedir/
-	ln -s "$MY_DOTFILES/homedir/$1" $1
-}
-# bare git repo alias for dotfiles
-alias dotfiles="git --git-dir=${BARE_DOTFILES} --work-tree=$HOME"
-alias dot='dotfiles'
-
-# Cheat sheets
-alias dterm="curl -s -X GET https://raw.githubusercontent.com/LeCoupa/awesome-cheatsheets/master/languages/bash.sh | less"
-alias dtmux="curl -s -X GET https://gist.githubusercontent.com/MohamedAlaa/2961058/raw/ddf157a0d7b1674a2190a80e126f2e6aec54f369/tmux-cheatsheet.markdown | less"
-alias ddocker="curl -s -X GET https://raw.githubusercontent.com/LeCoupa/awesome-cheatsheets/master/tools/docker.sh | less"
-alias dvim="curl -s -X GET https://raw.githubusercontent.com/LeCoupa/awesome-cheatsheets/master/tools/vim.txt | less"
-alias djavascript="curl -s -X GET https://raw.githubusercontent.com/LeCoupa/awesome-cheatsheets/master/languages/javascript.js | less"
-alias dnode="curl -s -X GET https://raw.githubusercontent.com/LeCoupa/awesome-cheatsheets/master/backend/node.js | less"
-
-alias kb="kubectl"
-alias mk="minikube"
-
-alias p="gopass $@"
-alias shellconf="EDITOR=subl pass edit shell/vars"
-# usages:
-#  genpass "sites/example.com"
-#  genpass "sites/example.com" 8 "username"
-function genpass {
-	source $HOME/lib_sh/echos.sh
-	entry=$1
-	url=$(echo $entry| sed -e 's/.*\///g')
-	user=${3:-$GIT_AUTHOR_EMAIL}
-	password_length=${2:-16}
-
-	running "generating ${entry} password.."
-	expect << EOF
-	  spawn gopass generate $@ --force
-	  sleep 1
-	  expect "How long should the password be?"
-	  send -- "$password_length"
-	  send "\r"
-	  expect "Do you have strict rules to include different character classes?"
-	  send "N\r"
-	  expect "Do you want to continue?"
-	  send "y\r"
-	  expect eof
-EOF
-	ok
-	running "setting user.."
-	printf "${user}" | gopass insert $entry user;ok
-	running "setting user.."
-	printf "${url}" | gopass insert $entry url;ok
-
-	# read -t 7 -r -p "Auto sync? (y|N) [default=y] " response; echo ;
-	echo "Auto sync? (y|N) [default=y] "
-	read -t 7 -r response; echo ;
-	response=${response:-y}
-	if [[ $response =~ (yes|y|Y) ]];then
-		gopass sync
-	fi
-}
-
-alias pass_update="gopass update --no-symbols --clip $@"
-# PHP
-# alias phptags="sh ~/.scripts/phpctags"
-# alias phptags_vendor="sh ~/.scripts/phpctags_vendor"
-
-alias nmap="nmap --spoof-mac 0 $@"
-
-# Ping scan only: -sP
-# Don't ping:     -PN
-# TCP SYN ping:   -PS
-# TCP ACK ping:   -PA
-# UDP ping:       -PU
-# ARP ping:       -PR
-# alias nmap.router="sudo nmap -v -sT -PN 192.168.0.1 --spoof-mac 0 -D 10.0.0.1,10.0.0.2,10.0.0.4"
-alias nmap.router="sudo nmap --osscan_guess -v -sT -PN 192.168.0.1 --spoof-mac 0 -D 10.0.0.1,10.0.0.2,10.0.0.4"
-
-function nmap_enumerate {
-	SUBNET="${1:-192.168.100}.0/24"
-	echo "Enumerating on $SUBNET\n"
-	sudo nmap -snA $SUBNET
-}
-
-# usages:
-#  nmap_local_subnet 192.168.0 [|only_ips]
-function nmap_local_subnet {
-	# TCP Null Scan
-	SUBNET="${1:-192.168.0}.0/24"
-	echo "Looking on $SUBNET\n"
-	nmap -sn $SUBNET
-}
-alias whoarehere="nmap_local_subnet $@"
-alias marco="whoarehere $@"
-function nmap_check_win_vunerable {
-	nmap -Pn -p445 --script=smb-vuln-ms17-010 192.168.0.0/24 -oN eternalblue-scan.txt
-	cat eternalblue-scan.txt | grep VULNERABLE
-}
-# nmap -T4 -A 192.168.0/24
-# nmap -T4 -A 192.168.0/24
-# nmap -T4 -p- -iL ips.tx
-
-alias only_ips='grep -Eo "(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)" | sort -u '
-
-alias ping="prettyping -i 2 $@"
-alias lping="prettyping -i 20 $@"
-
-
-alias arduino="/Applications/Arduino.app/Contents/MacOS/Arduino"
-# sudo tail -f /dev/ttyACM0
-# sudo chmod a+rw /dev/ttyUSB0
-#                      ttyUSB1
-#                      ttyACM0
-#                      ttyACM1
-#                      ttyS0
-
-alias lynda="youtube-dl $@ --username controle@hero99.com.br --password Hero30888899 --output \"%(playlist_title)s/%(autonumber)s.%(title)s.%(ext)s\" --all-subs --autonumber-size 2"
 
 # Apps
-alias jumpcutter="exec ${HOME}/dev/jumpcutter/run.sh $@"
-alias notify="npx node-notifier-cli notify --title 'Notification' -s --open $@"
-alias typora="open -a typora"
-alias zettlr="open -a zettlr"
-alias ff="fuck $@"
-alias mtop="glances"
-alias ntop="sudo iftop"
-alias networktop="ntop"
-alias toggle-hot-corner="toggle-hot-corner.sh"
-alias code.photo="carbon-now $@"
-alias f.create_usb_macos_installer="create-macos.sh $@"
-alias f.create_usb_udf_format="create-udf.sh $@"
-alias inspect="npx -q nodejs-dashboard $@"
-alias ffind="afind --ignore-dir={vendor,node_modules} $@"
-
-function take_my_wifi {
-	SSID="$(sudo npx osx-wifi-cli)"
-	PASS="$(npx wifi-password-cli)"
-	SSID=${SSID:21:-1}
-	npx qrcode "WIFI:T:WPA;S:${SSID};P:${PASS};;"
-}
-
-saythis() {
-  say -v 'Tom' $1
-}
-alias ok="saythis done!"
-alias falar="espeak -v pt-br $@"
-
-alias temp="dev && mkdir -p temp && cd temp"
-alias temp.rm="dev && rm -Rf temp"
-
-# Home
-alias snap="imagesnap -q -w 3 .jpg"
-alias tb="nc termbin.com 9999 | pbcopy"
-alias a.ssh="waitforssh.sh $@"
-alias desktop="cd ~/Desktop"
-alias desk="desktop"
-alias olx="cd ~/olx"
-alias dev="cd ${MY_CODE}"
-alias pi="cd ~/pi"
-alias blog="cd ${MY_BLOG}"
-alias blog.write="zettlr $MY_BLOG/portfolio"
-alias blog.pretty.code="code.photo -p blog-master-present $@"
-alias d.fix_video="jumpcutter"
 alias a.diff="$EDITOR_DIFF"
-alias vtop="npx -q vtop"
+alias a.find_empty_dirs="find . -type d -empty -print"
+alias a.inspect="inspect $@"
+alias a.npm_check="npx npm-check $@"
+alias a.npm_check2="npx nsp check $@"
+alias a.nodemon="npx nodemon $@"
+alias a.npm_run_all="npx npm-run-all $@"
 alias a.onchange="npx -q onchange"
 alias a.onerror="npx -q onerror"
-alias a.find_empty_dirs="find . -type d -empty -print"
 alias a.rm_empty_dirs="find . -type d -empty -delete"
-alias a.inspect="inspect $@"
-alias not="notify $@"
-alias blog.rec="blog_rec.sh $@"
-
-alias dotfiles_update="cd && git fetch upstream && git checkout master && git merge upstream/master"
-
-function docker_reset {
-	docker stop $(docker ps -a -q)
-	docker rm $(docker ps -a -q)
-	docker network rm $(docker network ls -q)
-	docker volume rm $(docker volume ls -q)
-	docker system prune --all --force
-}
-function exploit_this_cms {
-	temp && $(ls vulnx || git clone https://github.com/anouarbensaad/VulnX.git vulnx)
-	cd vulnx
-	docker build -t vulnx ./docker/
-	docker run --rm -it vulnx:latest -u $1
-}
-
-## run_this_container [git_repo] [image] [path_to_Dockerfile] vulnx:latest [params]
-## run_this_container https://github.com/anouarbensaad/VulnX.git vulnx ./docker/ "-u https://herospark.com/blog/"
-# function run_this_container {
-# 	temp && $(ls asd > /dev/null || git clone $1 asd)
-# 	cd asd
-# 	docker build -t $2 $3
-# 	docker run --rm -it $2 $4
-# }
-
-# Dev
-alias encriptar="gpg --encrypt --recipient thomas.groch@gmail.com "
-alias decriptar="gpg --decrypt "
-alias pid_gpg_agent="pgrep -x gpg-agent"
-# The export command below gives you the key you add to GitHub
-alias gpg_export="gpg --armor --export $@"
-
-alias "mynexts"='echo "Finding issues available for contributing, based on my ⭐️ repositories...\n"; docker run -e TOKEN=$MIGHTY_WATCHER_GITHUB_TOKEN --rm igorperikov/mighty-watcher:latest'
-
-# Lock the screen (when going AFK)
+alias a.sort_package_json="npx sort-package-json $@"
+alias a.webpack="npx webpack-cli $@"
+alias a.yo="npx yo $@"
 alias afk="/System/Library/CoreServices/Menu\ Extras/User.menu/Contents/Resources/CGSession -suspend"
+alias arduino="/Applications/Arduino.app/Contents/MacOS/Arduino"
+alias audit_this_site='docker run --rm -it trailofbits/twa -vw '
+alias autocommit="gitmoji_br --commit"
+alias autocommit_en="gitmoji_en --commit"
 
-alias sl="lf $@"
-alias j="colorls --long --group-directories-first --almost-all --git-status"
-alias l="lsd -la"
-alias qq="cat ~/.zsh_history | grep "
-alias ww="which "
-alias ee="open https://litewrite.net/"
+# Bash insulter
+if [ -f /etc/bash.command-not-found ]; then
+    . /etc/bash.command-not-found
+fi
 
-# Make some possibly destructive commands more interactive.
-# alias rm='rm -v'
-alias mv='mv -v'
-alias cp='cp -v'
+alias blog="cd ${MY_BLOG}"
+alias blog.pretty.code="code.photo -p blog-master-present $@"
+alias blog.rec="blog_rec.sh $@"
+alias blog.write="zettlr $MY_BLOG/portfolio"
+alias browser='docker run --rm -it browsh/browsh:latest'
 
-# has checks presence of various command line tools on the PATH and reports their installed version.
-alias has="curl -sL https://git.io/_has | bash -s"
-
-# Print each PATH entry on a separate line
-alias path='echo -e ${PATH//:/\\n}'
-
-# Copy and paste and prune the usless newline
-alias pbcopynn='tr -d "\n" | pbcopy'
-
-# Reload the shell (i.e. invoke as a login shell)
-alias reload="exec \$SHELL -l"
-
-alias launchpad.save="lporg save ~/.launchpad.yaml && dot && git add homedir/.launchpad.yaml && git commit -m '♻️  - Launchpad updated' && git push"
-
-alias jsonfix="pbpaste | jq . | pbcopy"
-
-alias curl.download="curl -L -O -C - "
-
+# Cheat sheets
+alias d.david="npx david $@"
+alias d.docker="curl -s -X GET https://raw.githubusercontent.com/LeCoupa/awesome-cheatsheets/master/tools/docker.sh|less"
+alias d.fix_video="jumpcutter"
+alias d.game="toggle-hot-corner"
+alias d.hacker_news='npx @rafaelrinaldi/hn-cli --keep-open --latest $@'
+alias d.image_mobile-gen='npx mobicon-cli $@'
+alias d.image_processing='npx korkut $@'
+alias d.javascript="curl -s -X GET https://raw.githubusercontent.com/LeCoupa/awesome-cheatsheets/master/languages/javascript.js|less"
+alias d.node="curl -s -X GET https://raw.githubusercontent.com/LeCoupa/awesome-cheatsheets/master/backend/node.js|less"
+alias d.qrcode='npx qrip $@'
+alias d.term="curl -s -X GET https://raw.githubusercontent.com/LeCoupa/awesome-cheatsheets/master/languages/bash.sh|less"
+alias d.tmux="curl -s -X GET https://gist.githubusercontent.com/MohamedAlaa/2961058/raw/ddf157a0d7b1674a2190a80e126f2e6aec54f369/tmux-cheatsheet.markdown|less"
+alias d.vim="curl -s -X GET https://raw.githubusercontent.com/LeCoupa/awesome-cheatsheets/master/tools/vim.txt|less"
+alias d.workin_hard='npx workin-hard $@'
+alias david="npx david $@"
+alias decriptar="gpg --decrypt "
+alias desk="desktop"
+alias desktop="cd ~/Desktop"
+alias dev="cd ${MY_CODE}"
+alias dnsflush='dscacheutil -flushcache;sudo killall -HUP mDNSResponder'
+alias dot="cd ${MY_DOTFILES}"
+alias dotfiles='git --git-dir=${BARE_DOTFILES}/ --work-tree=$HOME'
+alias dotfiles_update="cd && git fetch upstream && git checkout master && git merge upstream/master"
 alias down="aria2c --max-connection-per-server=16 --min-split-size=1M "
 
-alias "?"="tldr"
-alias "??"="curl cheat.sh/$@"
-
-alias td="todo.sh"
-alias tda="todo.sh add"
-alias tdl="todo.sh list"
-alias tdd="todo.sh do"
-
 # Empty the Trash on all mounted volumes and the main HDD.
-# Also, clear Apple’s System Logs to improve shell startup speed.
+# Also, clear Apple's System Logs to improve shell startup speed.
 # Finally, clear download history from quarantine. https://mths.be/bum
 alias emptytrash="sudo rm -rfv /Volumes/*/.Trashes; sudo rm -rfv ~/.Trash; sudo rm -rfv /private/var/log/asl/*.asl; sqlite3 ~/Library/Preferences/com.apple.LaunchServices.QuarantineEventsV* 'delete from LSQuarantineEvent'"
 
-alias stremio_flush_cache="/bin/rm -Rf ~/Library/Application\ Support/stremio-server/stremio-cache/*"
-alias disk_usage="ncdu"
-alias net_usage="sudo iftop"
-alias net_watch="sudo ngrep -d any"
-
-###############################################################################
-# Git section
-###############################################################################
-alias gitsubmoduleinit="git submodule update --init --recursive"
-
-
-
-function gitmoji_switch_stack {
-	pushd $HOME/.gitmoji > /dev/null 2>&1
-	rm -f gitmojis.json
-	if [[ -r "gitmojis-${1}.json" ]]; then
-		ln -s gitmojis-$1.json gitmojis.json
-	else
-		echo "$HOME/.gitmoji/gitmojis-${1}.json not found."
-	fi
-	popd > /dev/null 2>&1
-
-	# Process all arguments except the first one
-	[[ -r "$HOME/.gitmoji/gitmojis.json" ]] && gitmoji "${@:2}"
-}
-alias gitmoji_en="gitmoji_switch_stack default"
-alias gitmoji_br="gitmoji_switch_stack br"
-alias autocommit_en="gitmoji_en --commit"
-alias autocommit="gitmoji_br --commit"
-
-# Git Tools
-# assumes git-up is installed (gem install git-up)
-# switches to 'develop' branch, updates all local branches (nicely using git-up), removes all local branches already merged into 'develop'
-alias gitdev='git checkout develop; git-up; git branch --merged develop | grep -v "\* develop" | xargs -n 1 git branch -d; git branch;'
-
-# GIT
-alias g=git
-alias gss='git status -s'
-alias ggs="${MY_DOTFILES}/scripts/git-summary $@"
-alias ggss="npx git-summary; npx git-summary --line"
-alias gs="git status"
-alias gcom="git checkout master"
-alias gaa="git add ."
-alias gc="git commit -m "
-alias gp="git pull"
-alias gpp="git push"
-alias gacp="git add . && git commit --allow-empty-message && git push origin"
-alias gac="git add . && git commit --allow-empty-message"
-alias gpull="git pull origin"
-
-alias gl="git log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit"
-alias glg='git log --stat'
-alias glgp='git log --stat -p'
-alias glgg='git log --graph'
-alias glgga='git log --graph --decorate --all'
-alias glgm='git log --graph --max-count=10'
-alias glo='git log --oneline --decorate'
-alias glol="git log --graph --pretty='%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset'"
-alias glols="git log --graph --pretty='%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --stat"
-alias glod="git log --graph --pretty='%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%ad) %C(bold blue)<%an>%Creset'"
-alias glods="git log --graph --pretty='%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%ad) %C(bold blue)<%an>%Creset' --date=short"
-alias glola="git log --graph --pretty='%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --all"
-alias glog='git log --oneline --decorate --graph'
-alias gloga='git log --oneline --decorate --graph --all'
-
-alias gd="git-icdiff ${GIT_DIFF_OPTIONS:-}"
-alias gdi='git diff'
-alias gdca='git diff --cached'
-alias gdcw='git diff --cached --word-diff'
-alias gdct='git describe --tags `git rev-list --tags --max-count=1`'
-alias gds='git diff --staged'
-alias gdt='git diff-tree --no-commit-id --name-only -r'
-alias gdw='git diff --word-diff'
-
-alias nah="git reset --hard && git clean -df"
-
-# cp repo
-# git remote add personal https://gitlab.com/asd/qwe.git
-# git push personal
-
-alias logfun="tail -f /var/log/nginx/access.log | logstalgia --sync"
-alias tails="less +F " # or tail -250f
-
-# Laravel
-alias laratail='tails $(find storage/logs | tail -n 1)'
-alias laratest="php artisan config:clear && phpunit"
-alias laratestrand="php artisan config:clear && $HOME/.composer/vendor/fiunchinho/phpunit-randomizer/bin/phpunit-randomizer --colors --order rand"
-alias pacc="php artisan config:cache"
-alias pacl="php artisan config:clear"
-alias pas="php artisan serve"
-# alias composer="docker run -v $(pwd):/app -w /app composer"
-# docker run -v $(pwd):/app -w /app composer
-# docker run -v `pwd`/src:/src composer create-project --prefer-dist laravel/laravel src/$1
-alias npm_cache_proxy="docker run -e REDIS_ADDRESS=host.docker.internal:6379 -p 6660:8080 -it -d pkgems/npm-cache-proxy && npm config set registry http://localhost:6660"
-alias npm_cache_proxy_off="npm config set registry "
-alias run="npm run $@"
-
-# push git repo, but first, use git-up to make sure you are in sync and rebased with the remote
-alias pushup="git-up && git push"
-
-# buzzphrase commit
-# used for my presentation decks when I have nothing to say about the commit
-alias bpc='git add -A . && git cam "$(buzzphrase 2)" && git push'
-
-# backup without stash files before you switch branches
-function git_backup {
-	mkdir -p .config-backup && \
-	config checkout 2>&1 | egrep "\s+\." | awk {'print $1'} | \
-	xargs -I{} mv {} .config-backup/{}
-}
-
-###############################################################################
-# Sysadmin section
-###############################################################################
-
-function mkreadonly(){
-	echo -n '' > $1 && \
-	chmod 444 $1
-}
-
-# function defaults_debug() {
-# 	before=$(defaults read $1)
-# 	echo "Now set the new config"
-# 	echo -n "Press any key to continue..." && read
-# 	after=$(defaults read $1)
-# 	colordiff <(echo "${before}" ) <(echo "${after}" )
-# 	if [[ $? = 0 ]]; then
-# 		echo "nothing changed."
-# 	fi
-# }
-
-# Disable Spotlight
-alias spotoff="sudo mdutil -a -i off"
-# Enable Spotlight
-alias spoton="sudo mdutil -a -i on"
-
-# recursive dos2unix in current directory
-alias dos2lf='dos2unix `find ./ -type f`'
+alias encriptar="gpg --encrypt --recipient thomas.groch@gmail.com "
 
 # Files being opened
 alias files.open='sudo fs_usage -e -f filesystem|grep -v CACHE_HIT|grep -v grep|grep open'
@@ -504,98 +104,169 @@ alias files.usage='sudo fs_usage -e -f filesystem|grep -v CACHE_HIT|grep -v grep
 # Files in use in the Users directory
 alias files.usage.user='sudo fs_usage -e -f filesystem|grep -v CACHE_HIT|grep -v grep|grep Users'
 
-# Set the extended MacOS attributes on a file such that Quicklook will open it as text
-alias qltext='xattr -wx com.apple.FinderInfo "54 45 58 54 21 52 63 68 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00" $1'
-#alias qltext2='osascript -e tell application "Finder" to set file type of ((POSIX file "$1") as alias) to "TEXT"'
+alias f.create_usb_macos_installer="create-macos.sh $@"
+alias f.create_usb_udf_format="create-udf.sh $@"
+alias f.rm_all_node_modules="find . -name 'node_modules' -exec rm -rf '{}' +"
+alias ff="fuck $@"
+alias ffind="afind --ignore-dir={vendor,node_modules} $@"
 
-# Crontab auto reload
-if test -z $CRONTABCMD; then
-    # allows to source zshrc twice
-    export CRONTABCMD=$(which crontab)
-    crontab()
-    {
-        if [[ $@ == "-e" ]]; then
-            $EDITOR ~/.crontab && $CRONTABCMD ~/.crontab
-        else
-            $CRONTABCMD $@
-        fi
-    }
-    $CRONTABCMD ~/.crontab
-fi
-alias listlinks='gls -l --color | grep "\->"'
-alias lsln='gls -l | grep "\->" | while read fname
-do
-    echo "$fname" # your code goes here
-done'
+# firewall management
+alias port-forward-enable="echo 'rdr pass inet proto tcp from any to any port 2376 -> 127.0.0.1 port 2376'|sudo pfctl -ef -"
+alias port-forward-disable="sudo pfctl -F all -f /etc/pf.conf"
+alias port-forward-list="sudo pfctl -s nat"
 
-###############################################################################
-# Service section
-###############################################################################
+# Flush the DNS on Mac
+alias dnsflush='dscacheutil -flushcache;sudo killall -HUP mDNSResponder'
 
-alias nginx.start='sudo launchctl load /Library/LaunchDaemons/homebrew.mxcl.nginx.plist'
-alias nginx.stop='sudo launchctl unload /Library/LaunchDaemons/homebrew.mxcl.nginx.plist'
-alias nginx.restart='nginx.stop && nginx.start'
-alias nginx.config='sudo $EDITOR /usr/local/etc/nginx/valet/valet.conf'
-alias nginx.config='$EDITOR /usr/local/etc/nginx/valet/valet.conf'
-alias nginx.configtest='sudo nginx -t'
+# For HTTP connection set the following alias:
+alias dockerx="docker -H=174.138.49.215:2375"
 
-alias php.start="sudo launchctl load -w /Library/LaunchDaemons/homebrew.mxcl.php71.plist"
-alias php.stop="sudo launchctl unload -w /Library/LaunchDaemons/homebrew.mxcl.php71.plist"
-alias php.restart='php-fpm.stop && php-fpm.start'
+# Fun section
+alias game.seek='txt="";for i in {1..20};do txt=$txt"$i. ";done;txt=$txt" Ready or not, here I come";say $txt'
 
+# Git section
+alias g=git
+alias gaa="git add ."
+alias gac="git add . && git commit --allow-empty-message"
+alias gacp="git add . && git commit --allow-empty-message && git push origin"
+alias gc="git commit -m "
+alias gcom="git checkout master"
+alias gd="git-icdiff $GIT_DIFF_OPTIONS"
+alias gdca='git diff --cached'
+alias gdct='git describe --tags `git rev-list --tags --max-count=1`'
+alias gdcw='git diff --cached --word-diff'
+alias gdi='git diff'
+alias gds='git diff --staged'
+alias gdt='git diff-tree --no-commit-id --name-only -r'
+alias gdw='git diff --word-diff'
+alias ggs="${MY_DOTFILES}/scripts/git-summary $@"
+alias ggss="npx git-summary; npx git-summary --line"
+alias gitdev='git checkout develop; git-up; git branch --merged develop|grep -v "\* develop"|xargs -n 1 git branch -d; git branch;'
+alias gitsubmoduleinit="git submodule update --init --recursive"
+alias gl="git log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit"
+alias glg='git log --stat'
+alias glgg='git log --graph'
+alias glgga='git log --graph --decorate --all'
+alias glgm='git log --graph --max-count=10'
+alias glgp='git log --stat -p'
+alias glo='git log --oneline --decorate'
+alias glod="git log --graph --pretty='%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%ad) %C(bold blue)<%an>%Creset'"
+alias glods="git log --graph --pretty='%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%ad) %C(bold blue)<%an>%Creset' --date=short"
+alias glol="git log --graph --pretty='%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset'"
+alias glola="git log --graph --pretty='%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --all"
+alias glols="git log --graph --pretty='%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --stat"
+alias glog='git log --oneline --decorate --graph'
+alias gloga='git log --oneline --decorate --graph --all'
+alias gp="git pull"
+alias gpull="git pull origin"
+alias gpp="git push"
+alias gs="git status"
+alias gss='git status -s'
+alias heroku.temp="temp && heroku create $1 && heroku ps:exec --status --app $1 && heroku ps:exec "
+alias hollywood='docker run --rm -it bcbcarl/hollywood'
+
+# Home
+alias inspect="npx nodejs-dashboard $@"
+alias ip="dig +short myip.opendns.com @resolver1.opendns.com"
+alias iplocal="ipconfig getifaddr en0"
+alias ips="ifconfig -a|grep -o 'inet6\? \(addr:\)\?\s\?\(\(\([0-9]\+\.\)\{3\}[0-9]\+\)\|[a-fA-F0-9:]\+\)'|awk '{ sub(/inet6? (addr:)? ?/, \"\"); print }'"
+alias irc="screen irssi"
+
+# IP addresses
+alias ip="dig +short myip.opendns.com @resolver1.opendns.com"
+alias iplocal="ipconfig getifaddr en0"
+alias ips="ifconfig -a|grep -o 'inet6\? \(addr:\)\?\s\?\(\(\([0-9]\+\.\)\{3\}[0-9]\+\)\|[a-fA-F0-9:]\+\)'|awk '{ sub(/inet6? (addr:)? ?/, \"\"); print }'"
+
+alias j="colorls --long --group-directories-first --almost-all --git-status"
+alias jumpcutter="exec ${HOME}/dev/jumpcutter/run.sh $@"
+
+alias kb="kubectl"
+
+# Laravel
+alias laratest="php artisan config:clear && phpunit"
+alias laratestrand="php artisan config:clear && $HOME/.composer/vendor/fiunchinho/phpunit-randomizer/bin/phpunit-randomizer --colors --order rand"
+alias launchpad.save="lporg save ~/.launchpad.yaml && dot && git add homedir/.launchpad.yaml && git commit -m '♻️  - Launchpad updated' && git push"
+
+alias l="ls"
+alias l.babel_eslint="npx babel-eslint $@"
+alias l.eslint="npx eslint $@"
+alias l.eslint_config_prettier="npx eslint-config-prettier $@"
+alias l.eslint_config_standard="npx eslint-config-standard $@"
+alias l.eslint_config_standard-jsx="npx eslint-config-standard-jsx $@"
+alias l.eslint_config_standard-react="npx eslint-config-standard-react $@"
+alias l.eslint_plugin_prettier="npx eslint-plugin-prettier $@"
+alias l.eslint_plugin_react="npx eslint-plugin-react $@"
+alias l.prettier="npx prettier $@"
+alias listlinks='gls -l --color|grep "\->"'
+alias logfun="tail -f /var/log/nginx/access.log|logstalgia --sync"
+alias lookbusy="cat /dev/urandom|hexdump -C|grep \"34 32\""
+alias lping="prettyping -i 20 $@"
+alias lynda="youtube-dl $1 --username controle@hero99.com.br --password Hero30888899 --output \"%(playlist_title)s/%(autonumber)s.%(title)s.%(ext)s\" --all-subs --autonumber-size 2"
+
+alias mariadb.logs="tail -250f /tmp/mysql.log"
 alias mariadb.start="launchctl load -w ~/Library/LaunchAgents/homebrew.mxcl.mariadb.plist"
 alias mariadb.stop="launchctl unload -w ~/Library/LaunchAgents/homebrew.mxcl.mariadb.plist"
-alias mariadb.logs="tails /tmp/mysql.log"
-
+alias mk="minikube"
+alias mtop="glances"
+alias mymail="neomutt -f /var/mail/${USER}"
+alias mysql.logs='tail -250f /var/log/mysql/all.log'
 alias mysql.new='mysql -uroot -e "CREATE DATABASE IF NOT EXISTS $1;"'
+alias mysql.restart='mysql.stop && mysql.start'
 alias mysql.rm='mysql -uroot -e "DROP DATABASE IF EXISTS $1;"'
-
 alias mysql.start="launchctl load -w ~/Library/LaunchAgents/homebrew.mxcl.mysql.plist"
 alias mysql.stop="launchctl unload -w ~/Library/LaunchAgents/homebrew.mxcl.mysql.plist"
-alias mysql.restart='mysql.stop && mysql.start'
 
-# newest log file matching
-alias mariadb.logs='tails /var/log/mysql/all.log'
-alias ci.logs='tails $(ls -t application/logs/log-* | head -1)'
-alias nginx.logs.error='tails /Users/tg/.valet/Log/nginx-error.log'
-alias nginx.logs.access='tails /Users/tg/.valet/Log/nginx-access.log'
-alias nginx.logs.default.access='tails /usr/local/etc/nginx/logs/default.access.log'
-alias nginx.logs.default-ssl.access='tails /usr/local/etc/nginx/logs/default-ssl.access.log'
-alias nginx.logs.phpmyadmin.error='tails /usr/local/etc/nginx/logs/phpmyadmin.error.log'
-alias nginx.logs.phpmyadmin.access='tails /usr/local/etc/nginx/logs/phpmyadmin.access.log'
+# Make some possibly destructive commands more interactive.
+alias rm='rm -i'
+alias mv='mv -i'
+alias cp='cp -i'
 
-# brew uninstall --ignore-dependencies node icu4c; brew install node; brew link --overwrite node
-# fixes this problems
-# dyld: Library not loaded: /usr/local/opt/icu4c/lib/libicui18n.58.dylib
-#   Referenced from: /usr/local/bin/node
-#   Reason: image not found 
+alias nah="git reset --hard && git clean -df"
+alias neofetch="neofetch --config none"
+alias network.connections='lsof -l -i +L -R -V'
+alias network.established='lsof -l -i +L -R -V|grep ESTABLISHED'
+alias network.externalip='curl -s http://checkip.dyndns.org/|sed "s/[a-zA-Z<>/ :]//g"'
+alias network.internalip="ifconfig en0|egrep -o '([0-9]+\.[0-9]+\.[0-9]+\.[0-9]+)'"
+alias nginx.config='$EDITOR /usr/local/etc/nginx/valet/valet.conf'
+alias nginx.configtest='sudo nginx -t'
+alias nginx.logs.access='tail -250f /Users/tg/.valet/Log/nginx-access.log'
+alias nginx.logs.default-ssl.access='tail -250f /usr/local/etc/nginx/logs/default-ssl.access.log'
+alias nginx.logs.default.access='tail -250f /usr/local/etc/nginx/logs/default.access.log'
+alias nginx.logs.error='tail -250f /Users/tg/.valet/Log/nginx-error.log'
+alias nginx.logs.phpmyadmin.access='tail -250f /usr/local/etc/nginx/logs/phpmyadmin.access.log'
+alias nginx.logs.phpmyadmin.error='tail -250f /usr/local/etc/nginx/logs/phpmyadmin.error.log'
+alias nginx.restart='nginx.stop && nginx.start'
+alias nginx.start='sudo launchctl load /Library/LaunchDaemons/homebrew.mxcl.nginx.plist'
+alias nginx.stop='sudo launchctl unload /Library/LaunchDaemons/homebrew.mxcl.nginx.plist'
+alias nmap.router="sudo nmap --osscan_guess -v -sT -PN 192.168.0.1 --spoof-mac 0 -D 10.0.0.1,10.0.0.2,10.0.0.4"
+alias nogiveup="curl -s -L https://raw.githubusercontent.com/keroserene/rickrollrc/master/roll.sh|bash"
+alias not="notify $@"
+alias notify="npx node-notifier-cli notify --title 'Notification' -s --open $@"
+alias npm_cache_proxy="docker run -e REDIS_ADDRESS=host.docker.internal:6379 -p 6660:8080 -it -d pkgems/npm-cache-proxy && npm config set registry http://localhost:6660"
+alias npm_cache_proxy_off="npm config set registry "
+alias nsp="npx nsp ${@:-'check'}"
 
-alias brew.off="sudo brew services stop --all && brew services stop --all"
-alias brew.on="sudo brew services start dnsmasq && \
-	brew services start mariadb && \
-	sudo brew services start nginx && \
-	brew services start redis && \
-	sudo brew services start php;"
+alias olx="cd ~/olx"
 
-###############################################################################
-# Audit/Scan section
-###############################################################################
-
-alias stress="ab -n 10000 -c 10 "
-alias loadtest="npx loadtest -c 10 --rps 200 ${@}"
-
-###############################################################################
-# RaspberryPi section
-###############################################################################
-
-alias pi.magazine="wget -A pdf -m -p -E -k -K -npc https://www.raspberrypi.org/magpi-issues/"
+alias p="gopass $@"
+alias pacc="php artisan config:cache"
+alias pacl="php artisan config:clear"
+alias parrotdance="curl parrot.live"
+alias pas="php artisan serve"
+alias pass_update="gopass update --no-symbols --clip $@"
+alias pi="cd ~/pi"
 alias pi.findit="dns-sd -G v4 raspberrypi.local"
+alias pi.magazine="wget -A pdf -m -p -E -k -K -npc https://www.raspberrypi.org/magpi-issues/"
+alias pid_gpg_agent="pgrep -x gpg-agent"
+alias ping="prettyping -i 2 $@"
 
-###############################################################################
-# Network section
-###############################################################################
-# wget for check 404s
-alias audit_for_404="wget get --spider -nd -r '$@'"
+# Print each PATH entry on a separate line
+alias path='echo -e ${PATH//:/\\n}'
+
+# push git repo, but first, use git-up to make sure you are in sync and rebased with the remote
+alias pushup="git-up && git push"
+
+alias qrcode="curl qrenco.de/$@"
 
 # Reboot my home Linksys WAG160N / WAG54 / WAG320 / WAG120N Router / Gateway from *nix.
 alias rebootlinksys="curl -u 'admin:my-super-password' 'http://192.168.1.2/setup.cgi?todo=reboot'"
@@ -603,128 +274,16 @@ alias rebootlinksys="curl -u 'admin:my-super-password' 'http://192.168.1.2/setup
 # Reboot tomato based Asus NT16 wireless bridge
 alias reboottomato="ssh admin@192.168.1.1 /sbin/reboot"
 
-alias router='dig | grep "SERVER: "'
+# Reload the shell (i.e. invoke as a login shell)
+alias reload="exec \$SHELL -l"
 
-# firewall management
-alias port-forward-enable="echo 'rdr pass inet proto tcp from any to any port 2376 -> 127.0.0.1 port 2376' | sudo pfctl -ef -"
-alias port-forward-disable="sudo pfctl -F all -f /etc/pf.conf"
-alias port-forward-list="sudo pfctl -s nat"
+alias router='dig|grep "SERVER: "'
 
-# IP addresses
-alias ip="dig +short myip.opendns.com @resolver1.opendns.com"
-alias iplocal="ipconfig getifaddr en0"
-#alias iplan="$(ifconfig en0 | grep inet | awk '$1=="inet" {print $2}')"
-alias ips="ifconfig -a | grep -o 'inet6\? \(addr:\)\?\s\?\(\(\([0-9]\+\.\)\{3\}[0-9]\+\)\|[a-fA-F0-9:]\+\)' | awk '{ sub(/inet6? (addr:)? ?/, \"\"); print }'"
-
-# Show active network interfaces
-#alias ifactive="ifconfig | pcregrep -M -o '^[^\t:]+:([^\n]|\n\t)*status: active'"
-
-# Flush the DNS on Mac
-alias dnsflush='dscacheutil -flushcache;sudo killall -HUP mDNSResponder'
-alias macinfo='sw_vers'
-
-alias distroinfo='lsb_release -a'
-
-# Show network connections
-# Often useful to prefix with SUDO to see more system level network usage
-alias network.connections='lsof -l -i +L -R -V'
-alias network.established='lsof -l -i +L -R -V | grep ESTABLISHED'
-alias network.externalip='curl -s http://checkip.dyndns.org/ | sed "s/[a-zA-Z<>/ :]//g"'
-alias network.internalip="ifconfig en0 | egrep -o '([0-9]+\.[0-9]+\.[0-9]+\.[0-9]+)'"
-
-# list all IPs in the connected network
-function allaround(){
-	if=$(route -n get 0.0.0.0 2>/dev/null | awk '/interface: / {print $2}')
-
-	if [ -n "$if" ]; then
-	    echo "Default route is through interface $if"
-	    sudo arp-scan --interface="${if}" --localnet
-	else
-	    echo "No default route found"
-	fi
-}
-
-function take_my_wifi {
-	SSID="$(sudo npx osx-wifi-cli)"
-	PASS="$(npx wifi-password-cli)"
-	SSID=${SSID:21:-1}
-	npx qrcode "WIFI:T:WPA;S:${SSID};P:${PASS};;"
-}
-
-
-function findc() {
-	find $1 -type f -exec grep --color=auto -nH $2 /dev/null {} +
-}
-
-alias mymail="neomutt -f /var/mail/${USER}"
-
-function emails() {
-	results=$(echo "$(curl -Ls $1) $(whois $1)" | node $MY_DOTFILES/scripts/find-emails-tool/src/index.js | jq '.[].address' | sort | uniq -i)
-	echo "${results//\"}" | grep -vF "`cat $MY_DOTFILES/scripts/find-emails-tool/excluded_strings.txt`"
-}
-
-function cat_npm_scripts {
-	find . -maxdepth 2 -mindepth 2 -name "${1}" -exec cat {} | jq '.scripts' \;
-}
-
-if test -z $GITLABCMD; then
-    # allows to source zshrc twice
-    export GITLABCMD=$(which gitlab 2> /dev/null)
-
-	gitlab_init() {
-		json=$(gitlab create_project "$1" "{ description: '$2' }" --json)
-		http_url_to_repo=$(echo $json | jq .result.http_url_to_repo)
-		http_url_to_repo="${http_url_to_repo%\"}"
-		http_url_to_repo="${http_url_to_repo#\"}"
-
-		git remote add origin $http_url_to_repo
-		git push -u origin master
-	}
-
-	# gitlab_delete() {
-	# 	json=$(gitlab delete_project $1 --json)
-	# }
-fi
-
-function init_git {
-	git init
-	git add -A
-	git commit -m "Initial commit"
-}
-
-function init_npm {
-	npx license $(npm get init.license) -o "$(npm get init.author.name)" > LICENSE
-	# TODO: preserve current .gitignore
-	npx add-gitignore $@ node macOS windows linux sublimetext visualstudiocode
-	npx covgen "$(npm get init.author.email)"
-	npm init -y
-}
-
-alias f.rm_all_node_modules="find . -name 'node_modules' -exec rm -rf '{}' +"
-
-alias update="pnpx -y npm-check -u"
-alias u="update"
-
-alias d="pnpm dev"
-alias i="pnpm install"
-alias clean="rm -Rf .temp; rm -Rf node_modules; rm -f yarn.lock; rm -f package-lock.json; rm -f pnpm-lock.yaml"
-alias rm_node_modules="clean"
-
-alias a.sort_package_json="npx sort-package-json $@"
-alias a.npm_check="npx npm-check $@"
-alias a.npm_check2="npx nsp check $@"
-alias a.david="npx david $@"
-alias a.nsp="npx nsp ${@:-'check'}"
-alias a.nodemon="npx nodemon $@"
-alias a.npm_run_all="npx npm-run-all $@"
-alias a.webpack="npx webpack-cli $@"
-alias a.yo="npx yo $@"
-
-alias s.vue="npx vue/cli $@"
-alias s.whereami="npx github:@rafaelrinaldi/whereami $@"
+alias s="sublimetext"
 alias s.buzzphrase="npx buzzphrase $@"
 alias s.carbon_now="npx carbon-now-cli $@"
 alias s.codeceptjs="npx codeceptjs $@"
+alias s.empty_trash="npx empty-trash-cli $@"
 alias s.filepizza="npx filepizza $@"
 alias s.fkill="npx fkill-cli $@"
 alias s.get-urls="npx get-urls-cli $@"
@@ -749,177 +308,300 @@ alias s.siteaudit="npx siteaudit $@"
 alias s.spoof="npx spoof $@"
 alias s.surge="npx surge $@"
 alias s.torrent="npx torrent $@"
-alias s.empty_trash="npx empty-trash-cli $@"
 alias s.ungit="npx ungit $@"
 alias s.vtop="npx vtop $@"
+alias s.vue="npx vue/cli $@"
 alias s.vuepress="npx vuepress $@"
 alias s.wallpaper="npx wallpaper-cli $@"
+alias s.whereami="npx github:@rafaelrinaldi/whereami $@"
 alias s.why_is_node_running="npx why-is-node-running $@"
 alias s.wifi_password="npx wifi-password-cli $@"
 alias s.yamlxjson="npx yamlxjson $@"
+alias sl="lf $@"
+alias snap="imagesnap -q -w 3 .jpg"
 
-alias d.hacker_news='npx @rafaelrinaldi/hn-cli --keep-open --latest $@'
-alias d.qrcode='npx qrip $@'
-alias d.workin_hard='npx workin-hard $@'
-alias d.image_processing='npx korkut $@'
-alias d.image_mobile-gen='npx mobicon-cli $@'
-alias d.game="toggle-hot-corner"
+# Set the extended MacOS attributes on a file such that Quicklook will open it as text
+alias qltext='xattr -wx com.apple.FinderInfo "54 45 58 54 21 52 63 68 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00" $1'
 
-alias l.prettier="npx prettier $@"
-alias l.eslint="npx eslint $@"
-alias l.babel_eslint="npx babel-eslint $@"
-alias l.eslint_config_standard="npx eslint-config-standard $@"
-alias l.eslint_config_standard-react="npx eslint-config-standard-react $@"
-alias l.eslint_config_standard-jsx="npx eslint-config-standard-jsx $@"
-alias l.eslint_plugin_react="npx eslint-plugin-react $@"
-alias l.eslint_config_prettier="npx eslint-config-prettier $@"
-alias l.eslint_plugin_prettier="npx eslint-plugin-prettier $@"
+# Show active network interfaces
+#alias ifactive="ifconfig|pcregrep -M -o '^[^\t:]+:([^\n]|\n\t)*status: active'"
 
+# Show network connections
+# Often useful to prefix with SUDO to see more system level network usage
+alias network.connections='lsof -l -i +L -R -V'
+alias network.established='lsof -l -i +L -R -V|grep ESTABLISHED'
+alias network.externalip='curl -s http://checkip.dyndns.org/|sed "s/[a-zA-Z<>/ :]//g"'
+alias network.internalip="ifconfig en0|egrep -o '([0-9]+\.[0-9]+\.[0-9]+\.[0-9]+)'"
 
-###############################################################################
-# Fun section
-###############################################################################
+# Sysadmin section
+alias starwars="telnet towel.blinkenlights.nl"
+alias stress="ab -n 10000 -c 10 "
 
-alias game.seek='txt="";for i in {1..20};do txt=$txt"$i. ";done;txt=$txt" Ready or not, here I come";say $txt'
+# Disable Spotlight
+alias spotoff="sudo mdutil -a -i off"
+# Enable Spotlight
+alias spoton="sudo mdutil -a -i on"
 
-# A full set of cowsay aliases (includes all default cowsay options)
-alias pet.cow='npx cowsay $@'
-alias asdff="curl -s  https://raw.githubusercontent.com/julianosirtori/Cowsay-coachdefracassos/master/frases.json | jq -r '.[] | .frase ' | sort -R | head -n 1 | npx cowsay  -f www"
-alias pet.cow='npx cowsay $@'
-alias pet.turtle='npx cowsay $@ -f turtle'
-alias pet.beavis='npx cowsay $@ -f beavis.zen'
-alias pet.bong='npx cowsay $@ -f bong'
-alias pet.bud_frogs='npx cowsay $@ -f bud-frogs'
-alias pet.bunny='npx cowsay $@ -f bunny'
-alias pet.cheese='npx cowsay $@ -f cheese'
-alias pet.cower='npx cowsay $@ -f cower'
-alias pet.daemon='npx cowsay $@ -f daemon'
-alias pet.doge='npx cowsay $@ -f doge'
-alias pet.dragon_and_cow='npx cowsay $@ -f dragon-and-cow'
-alias pet.dragon='npx cowsay $@ -f dragon'
-alias pet.elephant_in_snake='npx cowsay $@ -f elephant-in-snake'
-alias pet.elephant='npx cowsay $@ -f elephant'
-alias pet.eyes='npx cowsay $@ -f eyes'
-alias pet.flaming_sheep='npx cowsay $@ -f flaming-sheep'
-alias pet.ghostbusters='npx cowsay $@ -f ghostbusters'
-alias pet.goat='npx cowsay $@ -f goat'
-alias pet.head_in='npx cowsay $@ -f head-in'
-alias pet.hedgehog='npx cowsay $@ -f hedgehog'
-alias pet.hellokitty='npx cowsay $@ -f hellokitty'
-alias pet.kiss='npx cowsay $@ -f kiss'
-alias pet.kitty='npx cowsay $@ -f kitty'
-alias pet.koala='npx cowsay $@ -f koala'
-alias pet.kosh='npx cowsay $@ -f kosh'
-alias pet.luke_koala='npx cowsay $@ -f luke-koala'
-alias pet.mech_and_cow='npx cowsay $@ -f mech-and-cow'
-alias pet.meow='npx cowsay $@ -f meow'
-alias pet.milk='npx cowsay $@ -f milk'
-alias pet.moofasa='npx cowsay $@ -f moofasa'
-alias pet.moose='npx cowsay $@ -f moose'
-alias pet.mutilated='npx cowsay $@ -f mutilated'
-alias pet.ren='npx cowsay $@ -f ren'
-alias pet.satanic='npx cowsay $@ -f satanic'
-alias pet.sheep='npx cowsay $@ -f sheep'
-alias pet.skeleton='npx cowsay $@ -f skeleton'
-alias pet.small='npx cowsay $@ -f small'
-alias pet.sodomized='npx cowsay $@ -f sodomized'
-alias pet.squirrel='npx cowsay $@ -f squirrel'
-alias pet.stegosaurus='npx cowsay $@ -f stegosaurus'
-alias pet.stimpy='npx cowsay $@ -f stimpy'
-alias pet.supermilker='npx cowsay $@ -f supermilker'
-alias pet.surgery='npx cowsay $@ -f surgery'
-alias pet.telebears='npx cowsay $@ -f telebears'
-alias pet.turkey='npx cowsay $@ -f turkey'
-alias pet.turtle='npx cowsay $@ -f turtle'
-alias pet.tux='npx cowsay $@ -f tux'
-alias pet.vader-koala='npx cowsay $@ -f vader-koala'
-alias pet.vader='npx cowsay $@ -f vader'
-alias pet.whale='npx cowsay $@ -f whale'
-alias pet.www='npx cowsay $@ -f www'
-
-alias lookbusy="cat /dev/urandom | hexdump -C | grep \"34 32\""
-
-# Convert RAW images to 2560px max-dimension JPEG @ 80 quality to ./output
-# check for presence of convert command first:
-
-# if test -z $CONVERTCMD; then
-#     # allows to source zshrc twice
-#     export CONVERTCMD=$(which convert 2> /dev/null)
-# 		function convert-raw-to-jpg() {
-# 			local quality=${1:-80};
-# 			local max_dim=${2:-2650};
-# 			local source_files=${3:-*.CR2};
-# 			echo "Usage: convert-raw-to-jpg [quality=80] [max-dimension-px=2560] [source=*.CR2]";
-# 			echo "Converting all ${source_files} to JPEG (${quality} quality, ${max_dim}px max) to output/...";
-# 			mkdir -p output 2> /dev/null;
-# 			find . -type f -iname "${source_files}" -print0 |       xargs -0 -n 1 -P 8 -I {} convert -verbose -units PixelsPerInch {}       -colorspace sRGB -resize ${max_dim}x${max_dim} -set filename:new '%t-%wx%h'       -density 72 -format JPG -quality ${quality} 'output/%[filename:new].jpg';
-# 			echo 'Done.';
-
-# 		}
-# fi;
-
+alias tb="nc termbin.com 9999|pbcopy"
+alias td="todo.sh"
+alias tda="todo.sh add"
+alias tdd="todo.sh do"
+alias tdl="todo.sh list"
+alias temp="dev && mkdir -p temp && cd temp"
+alias temp.rm="dev && rm -Rf temp"
+alias tempo="weather"
+alias tempo2="weather2"
+alias toggle-hot-corner="toggle-hot-corner.sh"
 alias tor_exit_nodes="curl https://check.torproject.org/cgi-bin/TorBulkExitList.py?ip=1.1.1.1"
+alias typora="open -a typora"
 
-# find . -type f -iname '*.CR2' -print0 | xargs -0 -n 1 -P 8 -I {} convert -verbose -units PixelsPerInch {} -colorspace sRGB -resize 2560x2650 -set filename:new '%t-%wx%h' -density 72 -format JPG -quality 80 '%[filename:new].jpg'
+alias vtop="npx -q vtop"
+
+alias weather="curl -s 'http://wttr.in/Curitiba?lang=pt'"
+alias weather2="curl -s 'http://v2.wttr.in/Curitiba?lang=pt'"
+alias world="telnet mapscii.me"
+alias ww="which "
+
+alias youtube="mpsyt"
+
+alias zettlr="open -a zettlr"
+alias zsh.debug="zsh -xv"
+
+# wget for check404s
+alias "check.404"="wget get --spider -nd -r '${1}'"
+
+# recursive dos2unix in current directory
+alias dos2lf='dos2unix `find ./ -type f`'
+
+alias "?"="tldr"
+alias "??"="curl cheat.sh/$1"
+
+alias qq="cat ~/.zsh_history|grep "
+alias ee="open https://litewrite.net/"
+
+# Copy and paste and prune the usless newline
+alias pbcopynn='tr -d "\n"|pbcopy'
+
+alias jsonfix="pbpaste|jq .|pbcopy"
+
+alias curl.download="curl -L -O -C - "
+
+alias pstorm='open -a PhpStorm'
+alias ws='open -a Webstorm'
+
 if [[ "$(uname -s)" == "Darwin" ]]; then
-	alias mount_ESP="mkdir -p /Volumes/ESP && sudo mount -t msdos /dev/disk0s1 /Volumes/ESP"
+    alias mount_ESP="mkdir -p /Volumes/ESP && sudo mount -t msdos /dev/disk0s1 /Volumes/ESP"
 elif [[ "$(uname -s)" == "Linux" ]]; then
 
-	# YAY
-	# Print current configuration
-	alias yaconf="yay -Pg"
-	# Install packages from the repositories
-	alias yain="yay -S"
-	# Install a package from a local file
-	alias yains="yay -U"
-	# Install packages as dependencies of another package
-	alias yainsd="yay -S --asdeps"
-	# Display information about a package in the local database
-	alias yaloc="yay -Qi"
-	# Search for packages in the local database
-	alias yalocs="yay -Qs"
-	# List installed packages including from AUR (tagged as "local")
-	alias yalst="yay -Qe"
-	# Force refresh of all package lists after updating mirrorlist
-	alias yamir="yay -Syy"
-	# Remove orphans using yaourt
-	alias yaorph="yay -Qtd"
-	# Remove packages, keeping its settings and dependencies
-	alias yare="yay -R"
-	# Remove packages, including its settings and unneeded dependencies
-	alias yarem="yay -Rns"
-	# Display information about a package in the repositories
-	alias yarep="yay -Si"
-	# Search for packages in the repositories
-	alias yareps="yay -Ss"
-	# Sync with repositories before upgrading packages
-	alias yaupg="yay -Syu"
-	 # Same as yaupg, but without confirmation
-	alias yasu="yay -Syu --no-confirm"
+    # YAY
+    # Print current configuration
+    alias yaconf="yay -Pg"
+    # Install packages from the repositories
+    alias yain="yay -S"
+    # Install a package from a local file
+    alias yains="yay -U"
+    # Install packages as dependencies of another package
+    alias yainsd="yay -S --asdeps"
+    # Display information about a package in the local database
+    alias yaloc="yay -Qi"
+    # Search for packages in the local database
+    alias yalocs="yay -Qs"
+    # List installed packages including from AUR (tagged as "local")
+    alias yalst="yay -Qe"
+    # Force refresh of all package lists after updating mirrorlist
+    alias yamir="yay -Syy"
+    # Remove orphans using yaourt
+    alias yaorph="yay -Qtd"
+    # Remove packages, keeping its settings and dependencies
+    alias yare="yay -R"
+    # Remove packages, including its settings and unneeded dependencies
+    alias yarem="yay -Rns"
+    # Display information about a package in the repositories
+    alias yarep="yay -Si"
+    # Search for packages in the repositories
+    alias yareps="yay -Ss"
+    # Sync with repositories before upgrading packages
+    alias yaupg="yay -Syu"
+     # Same as yaupg, but without confirmation
+    alias yasu="yay -Syu --no-confirm"
 
 
-	alias yay_install_packages='yay -S'
-	alias yay_search_packages='yay -Ss'
-	alias yay_description_of_the_package='yay -Si'
-	alias yay_update_all_packages='yay -Syu'
-	alias yay_remove_package='yay -Rns'
-	alias yay_clean_unwanted_packages='yay -Yc'
+    alias yay_install_packages='yay -S'
+    alias yay_search_packages='yay -Ss'
+    alias yay_description_of_the_package='yay -Si'
+    alias yay_update_all_packages='yay -Syu'
+    alias yay_remove_package='yay -Rns'
+    alias yay_clean_unwanted_packages='yay -Yc'
 
-	alias mount_ESP="sudo mkdir -p /mnt/ESP && sudo mount -t msdos /dev/disk0s1 /mnt/ESP"
-	alias saferestart="leftwm-check | grep failed || leftwm-command SoftReload"
-	alias linux_kernel_log="sudo journalctl -p 3 -xb"
-	alias linux_kernel="journalctl -afn100"
-	alias linux_update="sudo pacman -Syyu"
-	alias linux_bundle="pacman -Qqe > pkglist.txt"
-	alias gnome_quit="gnome-session-quit --no-prompt"
-	alias linux_networks="sudo lshw -C network"
-	alias wmtest="awmtt start -C ~/.config/awesome/rc.lua -D 3 -S 1280x800"
-	alias wmreset="cp /etc/xdg/awesome/rc.lua ~/.config/awesome/rc.lua"
-	alias pacman_rm_corrupt_packages='sudo find /var/cache/pacman/pkg/ -iname "*.part" -delete'
-	alias openports='sudo lsof -i -P -n | grep LISTEN'
-	alias watchopenports='watch "sudo lsof -i -P -n | grep LISTEN"'
-	alias cronstatus="systemctl status cronie"
-	alias wminwm="Xephyr -br -ac -noreset -screen 1920x1200 :$@"
-	alias open="xdg-open"
+    alias mount_ESP="sudo mkdir -p /mnt/ESP && sudo mount -t msdos /dev/disk0s1 /mnt/ESP"
+    alias linux_kernel="journalctl -afn100"
+    alias linux_update="sudo pacman -Syyu"
+    alias pacman_rm_corrupt_packages='sudo find /var/cache/pacman/pkg/ -iname "*.part" -delete'
 
 fi
+
+
+### Some more aliases
+
+# root privileges
+alias doas="doas --"
+
+# navigation
+up () {
+  local d=""
+  local limit="$1"
+
+  # Default to limit of 1
+  if [ -z "$limit" ]||[ "$limit" -le 0 ]; then
+    limit=1
+  fi
+
+  for ((i=1;i<=limit;i++)); do
+    d="../$d"
+  done
+
+  # perform cd. Show error if cd fails
+  if ! cd "$d"; then
+    echo "Couldn't go up $limit dirs.";
+  fi
+}
+
+# vim and emacs
+alias vim="nvim"
+alias em="/usr/bin/emacs -nw"
+alias emacs="emacsclient -c -a 'emacs'"
+alias doomsync="~/.emacs.d/bin/doom sync"
+alias doomdoctor="~/.emacs.d/bin/doom doctor"
+alias doomupgrade="~/.emacs.d/bin/doom upgrade"
+alias doompurge="~/.emacs.d/bin/doom purge"
+
+# Changing "ls" to "exa"
+alias ls='exa -al --color=always --group-directories-first' # my preferred listing
+alias la='exa -a --color=always --group-directories-first'  # all files and dirs
+alias ll='exa -l --color=always --group-directories-first'  # long format
+alias lt='exa -aT --color=always --group-directories-first' # tree listing
+alias l.='exa -a|egrep "^\."'
+
+# pacman and yay
+alias pacsyu='sudo pacman -Syyu'                 # update only standard pkgs
+alias yaysua='yay -Sua --noconfirm'              # update only AUR pkgs (yay)
+alias yaysyu='yay -Syu --noconfirm'              # update standard pkgs and AUR pkgs (yay)
+alias parsua='paru -Sua --noconfirm'             # update only AUR pkgs (paru)
+alias parsyu='paru -Syu --noconfirm'             # update standard pkgs and AUR pkgs (paru)
+alias unlock='sudo rm /var/lib/pacman/db.lck'    # remove pacman lock
+alias cleanup='sudo pacman -Rns (pacman -Qtdq)'  # remove orphaned packages
+
+# get fastest mirrors
+alias mirror="sudo reflector -f 30 -l 30 --number 10 --verbose --save /etc/pacman.d/mirrorlist"
+alias mirrord="sudo reflector --latest 50 --number 20 --sort delay --save /etc/pacman.d/mirrorlist"
+alias mirrors="sudo reflector --latest 50 --number 20 --sort score --save /etc/pacman.d/mirrorlist"
+alias mirrora="sudo reflector --latest 50 --number 20 --sort age --save /etc/pacman.d/mirrorlist"
+
+# Colorize grep output (good for log files)
+alias grep='grep --color=auto'
+alias egrep='egrep --color=auto'
+alias fgrep='fgrep --color=auto'
+
+# adding flags
+alias df='df -h'                          # human-readable sizes
+alias free='free -m'                      # show sizes in MB
+alias lynx='lynx -cfg=~/.lynx/lynx.cfg -lss=~/.lynx/lynx.lss -vikeys'
+alias vifm='./.config/vifm/scripts/vifmrun'
+alias ncmpcpp='ncmpcpp ncmpcpp_directory=$HOME/.config/ncmpcpp/'
+alias mocp='mocp -M "$XDG_CONFIG_HOME"/moc -O MOCDir="$XDG_CONFIG_HOME"/moc'
+
+# ps
+alias psa="ps auxf"
+alias psgrep="ps aux|grep -v grep|grep -i -e VSZ -e"
+alias psmem='ps auxf|sort -nr -k 4'
+alias pscpu='ps auxf|sort -nr -k 3'
+
+# Merge Xresources
+alias merge='xrdb -merge ~/.Xresources'
+
+# git
+alias addup='git add -u'
+alias addall='git add .'
+alias branch='git branch'
+alias checkout='git checkout'
+alias clone='git clone'
+alias commit='git commit -m'
+alias fetch='git fetch'
+alias pull='git pull origin'
+alias push='git push origin'
+alias stat='git status'  # 'status' is protected name so using 'stat' instead
+alias tag='git tag'
+alias newtag='git tag -a'
+
+# get error messages from journalctl
+alias jctl="journalctl -p 3 -xb"
+
+# gpg encryption
+# verify signature for isos
+alias gpg-check="gpg2 --keyserver-options auto-key-retrieve --verify"
+# receive the key of a developer
+alias gpg-retrieve="gpg2 --keyserver-options auto-key-retrieve --receive-keys"
+
+# youtube-dl
+alias yta-aac="youtube-dl --extract-audio --audio-format aac "
+alias yta-best="youtube-dl --extract-audio --audio-format best "
+alias yta-flac="youtube-dl --extract-audio --audio-format flac "
+alias yta-m4a="youtube-dl --extract-audio --audio-format m4a "
+alias yta-mp3="youtube-dl --extract-audio --audio-format mp3 "
+alias yta-opus="youtube-dl --extract-audio --audio-format opus "
+alias yta-vorbis="youtube-dl --extract-audio --audio-format vorbis "
+alias yta-wav="youtube-dl --extract-audio --audio-format wav "
+alias ytv-best="youtube-dl -f bestvideo+bestaudio "
+
+# switch between shells
+# I do not recommend switching default SHELL from bash.
+alias tobash="sudo chsh $USER -s /bin/bash && echo 'Now log out.'"
+alias tozsh="sudo chsh $USER -s /bin/zsh && echo 'Now log out.'"
+alias tofish="sudo chsh $USER -s /bin/fish && echo 'Now log out.'"
+
+# bare git repo alias for dotfiles
+alias config="/usr/bin/git --git-dir=$HOME/dotfiles --work-tree=$HOME"
+
+# termbin
+alias tb="nc termbin.com 9999"
+
+# the terminal rickroll
+alias rr='curl -s -L https://raw.githubusercontent.com/keroserene/rickrollrc/master/roll.sh|bash'
+
+# Unlock LBRY tips
+alias tips='lbrynet txo spend --type=support --is_not_my_input --blocking'
+
+### DTOS ###
+# Copy/paste all content of /etc/dtos over to home folder. A backup of config is created. (Be careful running this!)
+alias dtoscopy='[ -d ~/.config ]||mkdir ~/.config && cp -Rf ~/.config ~/.config-backup-$(date +%Y.%m.%d-%H.%M.%S) && cp -rf /etc/dtos/* ~'
+# Backup contents of /etc/dtos to a backup folder in $HOME.
+alias dtosbackup='cp -Rf /etc/dtos ~/dtos-backup-$(date +%Y.%m.%d-%H.%M.%S)'
+
+
+### BASH INSULTER (works in zsh though) ###
+if [ -f /etc/bash.command-not-found ]; then
+    . /etc/bash.command-not-found
+fi
+
+if command -v colordiff > /dev/null 2>&1; then
+    alias diff="colordiff -Nuar"
+else
+    alias diff="diff -Nuar"
+fi
+
+## get top process eating memory
+alias psmem='ps auxf|sort -nr -k 4'
+alias psmem10='ps auxf|sort -nr -k 4|head -10'
+
+## get top process eating cpu ##
+alias pscpu='ps auxf|sort -nr -k 3'
+alias pscpu10='ps auxf|sort -nr -k 3|head -10'
+
+# Safetynets
+# do not delete / or prompt if deleting more than 3 files at a time #
+# alias rm='rm -I --preserve-root'
+
+# package management
+# alias update='sudo apt-get update'
+# alias upgrade='sudo apt-get update && sudo apt-get dist-upgrade'
+# alias install='sudo apt-get install'

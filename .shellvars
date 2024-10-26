@@ -1,45 +1,30 @@
-export OS="$(uname -s)"
-
-if [[ "$OS" == "Darwin" ]]; then
-	export USR_PATH="/usr/local"
-elif [[ "$(uname -s)" == "Linux" ]]; then
-	export USR_PATH="/usr"
-fi
-
 # Preferred default editor for local and remote sessions
 SSH_CONNECTION=false
 if [[ -n $SSH_CONNECTION ]]; then
-	export EDITOR='vi'
-	export VISUAL='subl -n -w'
-	export EDITOR_DIFF='meld'
+    export EDITOR='vi'
+    export VISUAL='subl -n -w'
+    export EDITOR_DIFF='meld'
 else
-	export EDITOR='vi'
-	export VISUAL=$EDITOR
-	export EDITOR_DIFF='diff'
+    export EDITOR='vi'
+    export VISUAL=$EDITOR
+    export EDITOR_DIFF='diff'
 fi
 
 export HOMEBREW_EDITOR=$VISUAL
 # bindkey -v # Disabled for crontab be able to load
-export GOPATH=$HOME/Go
-export GOROOT=$USR_PATH/opt/go/libexec
+#export GOPATH=$HOME/Go
+#export GOROOT=$USR_PATH/opt/go/libexec
 
-
-# export _JAVA_OPTIONS=-Xmx512M
-#########################################################################
 # Temporary aliases useful for demos, other current projects
-#########################################################################
 export MY_TEMP=$HOME/dev/temp
 export MY_DOTFILES=$HOME
 export MY_CODE=$HOME/dev
-export MY_SITE=$HOME/site
 export MY_BLOG=$HOME/blog
 export MY_DOWNLOADS=$HOME/Downloads
 export MY_DOCUMENTS=$HOME/Documents
-export BARE_DOTFILES=$HOME/.dotfiles-bare
+export BARE_DOTFILES=$HOME/.bare-dotfiles
 
-#########################################################################
 # Tool paths
-#########################################################################
 # Remove forward-char widgets from ACCEPT
 # yelds true if shell is not interactive 16935422
 [[ ${-#*i} != ${-} ]] && ZSH_AUTOSUGGEST_ACCEPT_WIDGETS=("${(@)ZSH_AUTOSUGGEST_ACCEPT_WIDGETS:#forward-char}")
@@ -51,9 +36,7 @@ export ZSH_AUTOSUGGEST_STRATEGY=(history completion)
 export ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=30
 export ZSH_AUTOSUGGEST_USE_ASYNC=true
 
-#########################################################################
 # Tool settings
-#########################################################################
 # export NO_COLOR=0
 export DO_NOT_TRACK=1
 export HOMEBREW_NO_ANALYTICS=1
@@ -71,19 +54,74 @@ export PKG_CONFIG_PATH="$USR_PATH/opt/qt/lib/pkgconfig"
 export LDFLAGS="-L$USR_PATH/opt/qt/lib"
 export CPPFLAGS="-I$USR_PATH/opt/qt/include"
 
-#########################################################################
 # Dev settings
-#########################################################################
 export PASSWORD_STORE_REMOTE_URL=https://gitlab.com/thomas.groch/password-store
 export PASSWORD_STORE_DIR=$HOME/.password-store
 export PASSWORD_STORE_ENABLE_EXTENSIONS=true
 export PASSWORD_STORE_EXTENSIONS_DIR=$USR_PATH/lib/password-store/extensions
 
-export NPM_CONFIG_PREFIX=~/.npm-global
+[ -d $PASSWORD_STORE_DIR ] && source <(gopass shell/vars)
 
-export FZF_DEFAULT_COMMAND='fd --type file --follow --hidden --exclude .git --color=always'
-export FZF_DEFAULT_OPTS="--ansi"
-# To apply the command to CTRL-T as well
-export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
+export OS="$(uname -s)"
 
-#[ -d $PASSWORD_STORE_DIR ] && source <(gopass shell/vars)
+if [[ "$OS" == "Darwin" ]]; then
+    export USR_PATH="/usr/local"
+elif [[ "$OS" == "Linux" ]]; then
+    export USR_PATH="/usr"
+fi
+
+# Brew
+# homebrews ($USR_PATH/bin) should always take precedence
+export PATH=/usr/local/bin:/usr/local/sbin:~/bin:$PATH
+
+if [[ "$OS" == "Linux" ]]; then
+    export PATH=/home/linuxbrew/.linuxbrew/bin:$PATH
+fi
+export PATH=$PATH:.cargo/bin
+
+# PHP
+export PATH=$PATH:$HOME/.composer/vendor/bin
+
+# GO
+export PATH=$PATH:$USR_PATH/opt/go/libexec/bin
+
+# Ruby
+export PATH=$PATH:$USR_PATH/lib/ruby/gems/2.7.0/bin
+export PATH="$HOME/.rbenv/bin:$PATH"
+
+# Python
+export PATH="/usr/local/opt/python@3.8/bin:$PATH"
+export PATH="$HOME/Library/Python/3.8/bin:$PATH"
+
+# Node
+export PATH=$PATH:~/.npm-global/bin
+export PATH=$PATH:$HOME/.config/yarn/link/
+export PATH=$PATH:$USR_PATH/share/npm/bin
+
+# My Scripts
+export PATH=$PATH:$MY_DOTFILES/scripts
+
+# OPENSSL
+export PATH=$PATH:$USR_PATH/opt/openssl@1.1/bin
+
+export JAVA_HOME="/usr/lib/jvm/java-11-openjdk"
+export PATH="$JAVA_HOME/bin:$PATH"
+
+# qt5
+export PATH=$PATH:$USR_PATH/opt/qt/bin
+
+if [ -d "$HOME/adb-fastboot/platform-tools" ] ; then
+ export PATH="$HOME/adb-fastboot/platform-tools:$PATH"
+fi
+
+if [ -d "$HOME/.bin" ] ;
+  then PATH="$HOME/.bin:$PATH"
+fi
+
+if [ -d "$HOME/.local/bin" ] ;
+  then PATH="$HOME/.local/bin:$PATH"
+fi
+
+if [ -d "$HOME/Applications" ] ;
+  then PATH="$HOME/Applications:$PATH"
+fi

@@ -1,9 +1,10 @@
+# Definição do sistema operacional
 export OS="$(uname -s)"
 
 if [[ "$OS" == "Darwin" ]]; then
-	export USR_PATH="/usr/local"
-elif [[ "$(uname -s)" == "Linux" ]]; then
-	export USR_PATH="/usr"
+    export USR_PATH="/usr/local"
+elif [[ "$OS" == "Linux" ]]; then
+    export USR_PATH="/usr"
 fi
 
 # Brew
@@ -17,7 +18,7 @@ export LDFLAGS="-L/usr/local/opt/libffi/lib"
 export PKG_CONFIG_PATH="/usr/local/opt/libffi/lib/pkgconfig"
 
 if [[ "$OS" == "Linux" ]]; then
-	export PATH=/home/linuxbrew/.linuxbrew/bin:$PATH
+    export PATH=/home/linuxbrew/.linuxbrew/bin:$PATH
 fi
 export PATH=$PATH:.cargo/bin
 
@@ -45,27 +46,32 @@ export PATH="$HOME/Library/Python/3.8/bin:$PATH"
 # Node
 export PATH=$PATH:~/.npm-global/bin
 export PATH=$PATH:$HOME/.config/yarn/link/
-# export PATH=$PATH:./node_modules/.bin # is insecure in combination with the -execdir action of find.
+export PATH=$PATH:$MY_DOTFILES/node_modules/.bin
+export PATH=$PATH:./node_modules/.bin
 export PATH=$PATH:$USR_PATH/share/npm/bin
 
 # My Scripts
 export PATH=$PATH:$MY_DOTFILES/scripts
 
-# # Rpi
-# export PATH=$PATH:$HOME/pi/.bin
+# Rpi
+export PATH=$PATH:$HOME/pi/.bin
 
 # OPENSSL
 export PATH=$PATH:$USR_PATH/opt/openssl@1.1/bin
 
-export JAVA_HOME="/usr/lib/jvm/java-11-openjdk"
-export PATH="$JAVA_HOME/bin:$PATH"
 # qt5
 export PATH=$PATH:$USR_PATH/opt/qt/bin
 
+# Java
+export JAVA_HOME="/usr/lib/jvm/java-11-openjdk"
+export PATH="$JAVA_HOME/bin:$PATH"
+
+# Adb-fastboot
 if [ -d "$HOME/adb-fastboot/platform-tools" ] ; then
  export PATH="$HOME/adb-fastboot/platform-tools:$PATH"
 fi
 
+# Custom bin directories
 if [ -d "$HOME/.bin" ] ;
   then PATH="$HOME/.bin:$PATH"
 fi
@@ -77,6 +83,3 @@ fi
 if [ -d "$HOME/Applications" ] ;
   then PATH="$HOME/Applications:$PATH"
 fi
-
-# fastolx autocomplete setup
-# FASTOLX_AC_ZSH_SETUP_PATH=/Users/tg/Library/Caches/fast-olx-cli/autocomplete/zsh_setup && test -f $FASTOLX_AC_ZSH_SETUP_PATH && source $FASTOLX_AC_ZSH_SETUP_PATH;

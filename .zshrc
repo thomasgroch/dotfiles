@@ -1,27 +1,172 @@
-# https://blog.jonlu.ca/posts/speeding-up-zsh
-# Uncomment for speed debug
-# zmodload zsh/zprof
+export GOPATH=~/go
+export PATH=$PATH:$GOPATH/bin
+export JIRA_API_TOKEN=
 
-# asd test2
+export PATH="~/.local/bin:$PATH"
+export PATH="/usr/local/bin:$PATH"
 
-### EXPORT
-export ZSH=$HOME/.oh-my-zsh
-export ZSH_CUSTOM=$HOME/.oh-my-zsh-custom/ # Default is $ZSH/custom
-export TERM="xterm-256color"                      # getting proper colors
-export HISTORY_IGNORE="(ls|cd|pwd|exit|sudo reboot|history|cd -|cd ..)"
-export EDITOR="emacsclient -t -a ''"              # $EDITOR use Emacs in terminal
-export VISUAL="emacsclient -c -a emacs"           # $VISUAL use Emacs in GUI mode
+export PATH=$PATH:$HOME/.config/composer/vendor/bin
 
-# Set to this to use case-sensitive completion
-export CASE_SENSITIVE="false"
+export PATH=$PATH:$HOME/.cargo/bin
+export PATH=$PATH:/usr/local/go/bin
+# set PATH so it includes /usr/local/go/bin if it exists
+if [ -d "/usr/local/go/bin" ] ; then
+    PATH="/usr/local/go/bin:$PATH"
+fi
+export OPENAI_API_KEY=
+alias pair="aider"
+alias aaa="spf"
+alias radio="cd && ./goradion-linux-amd64"
 
-# disable weekly auto-update checks
-# export DISABLE_AUTO_UPDATE="true"
-export DISABLE_UPDATE_PROMPT="true"
+alias ff.pass="cd ~/firefox_decrypt/; python3 firefox_decrypt.py /home/camila/snap/firefox/common/.mozilla/firefox/vv9b9822.default"
 
-# disable autosetting terminal title.
-export DISABLE_AUTO_TITLE="true"
+alias wifipass="nmcli device wifi show-password"
+alias h="helix"
+alias y="yarn"
+alias gss="git status"
+alias ggs="~/git-summary $@"
+alias git_diff_clean="git diff --ignore-space-at-eol -b -w "
+alias git_future_work="git_diff_clean > future_work.patch; xclip -sel clip future_work.patch"
+alias sharediff="git_future_work"
 
+alias npm_cache_proxy="docker run -e REDIS_ADDRESS=host.docker.internal:6379 -p 6660:8080 -it -d pkgems/npm-cache-proxy && npm config set registry http://localhost:6660"
+alias npm_cache_proxy_off="npm config set registry "
+alias run="npm run $@"
+
+# futurecommit "1h30m" "Your commit message"
+alias futurecommit='export GIT_AUTHOR_DATE="$(date -d "1 day" --utc)" && export GIT_COMMITTER_DATE="$GIT_AUTHOR_DATE" && git commit -m'
+
+
+alias vizgit="
+gource \
+    -s .03 \
+    -1920x1080 \
+    --seconds-per-day 0.25 \
+    --auto-skip-seconds .1 \
+    --multi-sampling \
+    --stop-at-end \
+    --key \
+    --highlight-users \
+    --date-format "%d/%m/%y" \
+    --hide mouse,filenames \
+    --file-idle-time 0 \
+    --max-files 0  \
+    --background-colour 000000 \
+    --font-size 25 \
+    --output-ppm-stream - \
+    --output-framerate 30 \
+    --colour-images \
+    --title 'Visualization' \
+    | ffmpeg -y -r 30 -f image2pipe -vcodec ppm -i - -b 65536K movie.mp4"
+
+#alias jiraforme="jira issue list -a$(jira me)"
+
+#alias jiraforme_todo="jiraforme -s\"To Do\""
+#alias jiraforme_doing="jiraforme -s\"In Progress\""
+#alias jiraforme_pr="jiraforme -s\"PULL REQUEST\""
+#alias jiraforme_done="jiraforme -s\"Done\""
+
+# alias jiraforme="jira sprint list --current -a$(jira me)"
+
+# Usage: j WEB-4250 "10m"
+alias j="jira"
+alias ji="j issue worklog add $@ --no-input"
+
+alias asd="subl ~/dev/autorun/current_issue.txt"
+
+# alias jfm_raw_todo="jiraforme_todo --plain --columns id --no-headers"
+# alias jfm_raw_doing="jiraforme_doing --plain --columns id --no-headers"
+# alias jfm_raw_pr="jiraforme_pr --plain --columns id --no-headers"
+# alias jfm_raw_done="jiraforme_done --plain --columns id --no-headers"
+
+# # mv all doing issues to pull request
+# alias jiraforme_mv_all_doing_to_pr="jira issue move $(jfm_raw_doing) -s\"PULL REQUEST\""
+
+alias lintthis="npx prettier 'src/**/*.{ts,js,gql}' -w; npx vue-cli-service lint --fix"
+alias ping="prettyping"
+
+function watcha {
+    watch -d -n 30 $(alias "$@" | cut -d\' -f2)
+}
+
+function docker_restart {
+    docker stop $(docker ps -a -q)
+    docker rm $(docker ps -a -q)
+    docker network rm $(docker network ls -q)
+    docker-compose build
+    docker-compose up -d
+}
+
+function docker_stop {
+    docker stop $(docker ps -a -q)
+}
+
+alias lg="lazygit"
+function docker_reset {
+    docker stop $(docker ps -a -q)
+    docker rm $(docker ps -a -q)
+    docker network rm $(docker network ls -q)
+    docker volume rm $(docker volume ls -q)
+    docker system prune --all --force
+}
+alias ld="doko"
+alias ldd="lazydocker"
+# alias l="ls -la --color"
+alias ..="cd .."
+alias dev="cd ~/dev/"
+alias emu="nvm use 16; firebase emulators:start --import=./firebase-data --export-on-exit"
+alias d="docker-compose down; docker network rm $(docker network ls -q); ./cli.sh start:emulators"
+alias dd="docker-compose up -d"
+alias "?"="tldr"
+alias "??"="shell-genie ask"
+#alias "!"="shell-genie ask --explain"
+alias chat="??"
+
+
+
+# If you come from bash you might have to change your $PATH.
+# export PATH=$HOME/bin:$HOME/.local/bin:/usr/local/bin:$PATH
+
+# Path to your Oh My Zsh installation.
+export ZSH="$HOME/.oh-my-zsh"
+
+# Set name of the theme to load --- if set to "random", it will
+# load a random theme each time Oh My Zsh is loaded, in which case,
+# to know which specific one was loaded, run: echo $RANDOM_THEME
+# See https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
+ZSH_THEME="robbyrussell"
+
+# Set list of themes to pick from when loading at random
+# Setting this variable when ZSH_THEME=random will cause zsh to load
+# a theme from this variable instead of looking in $ZSH/themes/
+# If set to an empty array, this variable will have no effect.
+# ZSH_THEME_RANDOM_CANDIDATES=( "robbyrussell" "agnoster" )
+
+# Uncomment the following line to use hyphen-insensitive completion.
+# Case-sensitive completion must be off. _ and - will be interchangeable.
+# HYPHEN_INSENSITIVE="true"
+
+# Uncomment one of the following lines to change the auto-update behavior
+# zstyle ':omz:update' mode disabled  # disable automatic updates
+# zstyle ':omz:update' mode auto      # update automatically without asking
+# zstyle ':omz:update' mode reminder  # just remind me to update when it's time
+
+# Uncomment the following line to change how often to auto-update (in days).
+# zstyle ':omz:update' frequency 13
+
+# Uncomment the following line if pasting URLs and other text is messed up.
+# DISABLE_MAGIC_FUNCTIONS="true"
+
+# Uncomment the following line to disable colors in ls.
+# DISABLE_LS_COLORS="true"
+
+# Uncomment the following line to enable command auto-correction.
+# ENABLE_CORRECTION="true"
+
+# Uncomment the following line to display red dots whilst waiting for completion.
+# You can also set it to another string to have that shown instead of the default red dots.
+# e.g. COMPLETION_WAITING_DOTS="%F{yellow}waiting...%f"
+# Caution: this setting can cause issues with multiline prompts in zsh < 5.7.1 (see #5765)
 # Uncomment the following line to display red dots whilst waiting for completion.
 COMPLETION_WAITING_DOTS="true"
 
@@ -36,22 +181,8 @@ DISABLE_UNTRACKED_FILES_DIRTY="true"
 # "mm/dd/yyyy"|"dd.mm.yyyy"|"yyyy-mm-dd"
 # or set a custom format using the strftime function format specifications,
 # see 'man strftime' for details.
-HIST_STAMPS="yyyy-mm-dd"
+HIST_STAMPS="dd/mm/yyyy"
 
-
-### SET MANPAGER
-### Uncomment only one of these!
-
-### "bat" as manpager
-export MANPAGER="sh -c 'col -bx | bat -l man -p'"
-
-### "vim" as manpager
-# export MANPAGER='/bin/bash -c "vim -MRn -c \"set buftype=nofile showtabline=0 ft=man ts=8 nomod nolist norelativenumber nonu noma\" -c \"normal L\" -c \"nmap q :qa<CR>\"</dev/tty <(col -b)"'
-
-### "nvim" as manpager
-# export MANPAGER="nvim -c 'set ft=man' -"
-
-### SET VI MODE ###
 # Comment this line out to enable default emacs-like bindings
 bindkey -v
 
@@ -68,26 +199,16 @@ case ${TERM} in
     ;;
 esac
 
-# Which plugins would you like to load? (plugins can be found in ~/oh-my-zsh/plugins/*)
+# Would you like to use another custom folder than $ZSH/custom?
+# ZSH_CUSTOM=/path/to/new-custom-folder
+
+# Which plugins would you like to load?
+# Standard plugins can be found in $ZSH/plugins/
+# Custom plugins may be added to $ZSH_CUSTOM/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
+# Add wisely, as too many plugins slow down shell startup.
 plugins=(git)
-plugins+=(ssh-agent)
-plugins+=(gpg-agent)
-plugins+=(gnu-utils)
-plugins+=(pass)
-plugins+=(k)
-plugins+=(yarn)
-# plugins+=(gitfast) # heavy load
-plugins+=(fasd)
-plugins+=(git-extras)
-plugins+=(sudo)
-# plugins+=(composer)
-plugins+=(docker)
-plugins+=(docker-machine)
-plugins+=(laravel5)
-plugins+=(sublime)
-plugins+=(httpie)
-plugins+=(ansible)
+plugins=(zsh-autosuggestions)
 plugins+=(compleat)
 plugins+=(dirpersist)
 plugins+=(dircycle) # cycle your directory stack {left,right} using Ctrl+Shift+Left/Right.
@@ -95,22 +216,24 @@ plugins+=(copyfile)
 plugins+=(colorize)
 plugins+=(history)
 plugins+=(cp)
-plugins+=(tmuxinator)
-plugins+=(zsh-z)
-plugins+=(zsh-autosuggestions)
-plugins+=(zsh-completions)
 plugins+=(zsh-syntax-highlighting)
-if [[ "$OS" == "Linux" ]]; then
-	plugins+=(archlinux)
-fi
+
+source $ZSH/oh-my-zsh.sh
+source ~/.zprofile
+
+# User configuration
 
 
+# Set to this to use case-sensitive completion
+export CASE_SENSITIVE="false"
 
+# disable weekly auto-update checks
+# export DISABLE_AUTO_UPDATE="true"
+export DISABLE_UPDATE_PROMPT="true"
 
-###### Prompt
-# prompt='%F{35}%* [%j] [%m:%F{75}%f%F{69}%c%f%F{35}] %F{black}%K{red}%#%f%k '
+# disable autosetting terminal title.
+export DISABLE_AUTO_TITLE="true"
 
-##### History
 
 # Set history file
 HISTFILE=~/.zsh_history
@@ -122,356 +245,42 @@ HISTSIZE=500000
 SAVEHIST="${HISTSIZE}"
 
 # # Enable history search with up and down arrows
-# autoload -Uz up-line-or-beginning-search down-line-or-beginning-search
-# zle -N up-line-or-beginning-search
-# zle -N down-line-or-beginning-search
+autoload -Uz up-line-or-beginning-search down-line-or-beginning-search
+zle -N up-line-or-beginning-search
+zle -N down-line-or-beginning-search
 
-# [[ -n "$key[Up]"   ]] && bindkey -- "$key[Up]"   up-line-or-beginning-search
-# [[ -n "$key[Down]" ]] && bindkey -- "$key[Down]" down-line-or-beginning-search
+[[ -n "$key[Up]"   ]] && bindkey -- "$key[Up]"   up-line-or-beginning-search
+[[ -n "$key[Down]" ]] && bindkey -- "$key[Down]" down-line-or-beginning-search
 
-
-[ -r $ZSH/oh-my-zsh.sh ] && source $ZSH/oh-my-zsh.sh
-[ -r $ZSH/custom/.colored_man_pages.zsh ] && source $ZSH/custom/.colored_man_pages.zsh
-[ -r $ZSH/custom/tmuxinator.zsh ] && source $ZSH/custom/tmuxinator.zsh
-
-# npx as default fallback command
-# source <(npx --shell-auto-fallback zsh)
-
-# Advanced Tab completion
-# autoload -Uz compinit && compinit
-
-# Now can be use code that calls compdef
-# [ -z "$TMUX" ] && { exec /usr/local/bin/tmux -CC new-session -A -s main && exit;}
-# The -A flag makes new-session behave like
-	# attach-session if session-name already exists
-
-# tmux -CC attach || tmux -CC
-
-# if [[ -z $TMUX ]]; then
-# 	echo 'no tmux'
-# else
-# 	echo "yes tmux: ${TMUX}"
-# fi
-# Is this needed?
-# if [[ -z $TMUX ]]; then
-	[ -r $HOME/.profile ] && source $HOME/.profile
-# fi
-
-export MANPATH="$USR_PATH/man:$MANPATH"
+# export MANPATH="/usr/local/man:$MANPATH"
 
 # You may need to manually set your language environment
-export LANG=en_US.UTF-8
+# export LANG=en_US.UTF-8
 
-if [[ "$OS" == "Linux" ]]; then
-	# Compilation flags
-	export ARCHFLAGS="-arch x86_64"
-fi
-
-setopt list_ambiguous
-
-# if (command which -s yarn) npm () {
-#   case $@ in
-#     *-g*|root*) command npm $@;;
-#     install*) (($# > 1)) && yarn add ${@[2,#]} || yarn install;;
-#     *) yarn $@;;
-#   esac
-# }
-# [ $ZSH_EVAL_CONTEXT = toplevel ] && npm $@
-
-
-# if test -z $GOPASSCMD; then
-#    # allows to source zshrc twice
-#    export GOPASSCMD=$(which gopass)
-
-# 	[ -n $GOPASSCMD ] && [ -d PASSWORD_STORE_DIR ] && source <($GOPASSCMD completion zsh | head -n -1 | tail -n +2)
-# 	compdef _gopass gopass
+# Preferred editor for local and remote sessions
+# if [[ -n $SSH_CONNECTION ]]; then
+#   export EDITOR='vim'
+# else
+#   export EDITOR='nvim'
 # fi
 
-# alias zsh_is_loading="zsh -o SOURCE_TRACE"
+# Compilation flags
+# export ARCHFLAGS="-arch $(uname -m)"
 
-# if [ -x "$(command -v rbenv)" ]; then
-# 	# make rbenv load automatically when open Terminal
-# 	eval "$(rbenv init -)"
-# fi
+# Set personal aliases, overriding those provided by Oh My Zsh libs,
+# plugins, and themes. Aliases can be placed here, though Oh My Zsh
+# users are encouraged to define aliases within a top-level file in
+# the $ZSH_CUSTOM folder, with .zsh extension. Examples:
+# - $ZSH_CUSTOM/aliases.zsh
+# - $ZSH_CUSTOM/macos.zsh
+# For a full list of active aliases, run `alias`.
+#
+___MY_VMOPTIONS_SHELL_FILE="${HOME}/.jetbrains.vmoptions.sh"; if [ -f "${___MY_VMOPTIONS_e111SHELL_FILE}" ]; then . "${___MY_VMOPTIONS_SHELL_FILE}"; fi
 
-# if [ -x "$(command -v pyenv)" ]; then
-# 	eval "$(pyenv init -)"
-# fi
+export PYTHON=/usr/bin/python3
+export PATH="/usr/bin/python3:$PATH"
+if [ -f "/home/camila/.config/fabric/fabric-bootstrap.inc" ]; then . "/home/camila/.config/fabric/fabric-bootstrap.inc"; fi
 
-# if [ -x "$(command -v starship)" ]; then
-# 	eval "$(starship init zsh)"
-# fi
-
-# if [ -x "$(command -v colorls)" ]; then
-# 	source $(dirname $(gem which colorls))/tab_complete.sh
-# fi
-
-
-
-##### Aliases
-# alias ..='cd ..'
-# alias ...='cd ../../../'
-# alias ....='cd ../../../../'
-# alias back='cd $OLDPWD'
-# alias c='clear'
-# alias cd..='cd ..'
-# alias cp='cp -iv'
-# alias chmod="chmod -c"
-# alias chown="chown -c"
-# alias e="vim -O "
-# alias E="vim -o "
-# alias egrep='egrep --colour=auto'
-# alias extip='curl icanhazip.com'
-# alias grep='grep --color=auto'
-# alias l.='ls -lhFa --time-style=long-iso --color=auto'
-# alias ll='ls'
-# alias ln='ln -iv'
-# alias ls='ls -lhF --color=auto --human-readable --time-style=long-iso --classify'
-# alias lsmount='mount |column -t'
-# alias mkdir='mkdir -pv'
-# alias mv='mv -iv'
-# alias ports='netstat -tulanp'
-# alias h='history -i'
-# alias history='history -i'
-# alias j='jobs -l'
-# alias rm='rm -iv'
-# alias rmdir='rmdir -v'
-# alias speedtest='curl -s https://raw.githubusercontent.com/sivel/speedtest-cli/master/speedtest.py | python -'
-# alias ssha='eval $(ssh-agent) && ssh-add'
-# alias svim='sudo vim'
-# alias tn=' tmux new -s'
-# alias wget='wget -c'
-
-
-### Some more aliases
-
-# root privileges
-alias doas="doas --"
-
-# navigation
-up () {
-  local d=""
-  local limit="$1"
-
-  # Default to limit of 1
-  if [ -z "$limit" ] || [ "$limit" -le 0 ]; then
-    limit=1
-  fi
-
-  for ((i=1;i<=limit;i++)); do
-    d="../$d"
-  done
-
-  # perform cd. Show error if cd fails
-  if ! cd "$d"; then
-    echo "Couldn't go up $limit dirs.";
-  fi
-}
-
-# vim and emacs
-alias vim="nvim"
-alias em="/usr/bin/emacs -nw"
-alias emacs="emacsclient -c -a 'emacs'"
-alias doomsync="~/.emacs.d/bin/doom sync"
-alias doomdoctor="~/.emacs.d/bin/doom doctor"
-alias doomupgrade="~/.emacs.d/bin/doom upgrade"
-alias doompurge="~/.emacs.d/bin/doom purge"
-
-# Changing "ls" to "exa"
-alias ls='exa -al --color=always --group-directories-first' # my preferred listing
-alias la='exa -a --color=always --group-directories-first'  # all files and dirs
-alias ll='exa -l --color=always --group-directories-first'  # long format
-alias lt='exa -aT --color=always --group-directories-first' # tree listing
-alias l.='exa -a | egrep "^\."'
-
-# pacman and yay
-alias pacsyu='sudo pacman -Syyu'                 # update only standard pkgs
-alias yaysua='yay -Sua --noconfirm'              # update only AUR pkgs (yay)
-alias yaysyu='yay -Syu --noconfirm'              # update standard pkgs and AUR pkgs (yay)
-alias parsua='paru -Sua --noconfirm'             # update only AUR pkgs (paru)
-alias parsyu='paru -Syu --noconfirm'             # update standard pkgs and AUR pkgs (paru)
-alias unlock='sudo rm /var/lib/pacman/db.lck'    # remove pacman lock
-alias cleanup='sudo pacman -Rns (pacman -Qtdq)'  # remove orphaned packages
-
-# get fastest mirrors
-alias mirror="sudo reflector -f 30 -l 30 --number 10 --verbose --save /etc/pacman.d/mirrorlist"
-alias mirrord="sudo reflector --latest 50 --number 20 --sort delay --save /etc/pacman.d/mirrorlist"
-alias mirrors="sudo reflector --latest 50 --number 20 --sort score --save /etc/pacman.d/mirrorlist"
-alias mirrora="sudo reflector --latest 50 --number 20 --sort age --save /etc/pacman.d/mirrorlist"
-
-# Colorize grep output (good for log files)
-alias grep='grep --color=auto'
-alias egrep='egrep --color=auto'
-alias fgrep='fgrep --color=auto'
-
-# confirm before overwriting something
-alias cp="cp -i"
-alias mv='mv -i'
-alias rm='rm -i'
-
-# adding flags
-alias df='df -h'                          # human-readable sizes
-alias free='free -m'                      # show sizes in MB
-alias lynx='lynx -cfg=~/.lynx/lynx.cfg -lss=~/.lynx/lynx.lss -vikeys'
-alias vifm='./.config/vifm/scripts/vifmrun'
-alias ncmpcpp='ncmpcpp ncmpcpp_directory=$HOME/.config/ncmpcpp/'
-alias mocp='mocp -M "$XDG_CONFIG_HOME"/moc -O MOCDir="$XDG_CONFIG_HOME"/moc'
-
-# ps
-alias psa="ps auxf"
-alias psgrep="ps aux | grep -v grep | grep -i -e VSZ -e"
-alias psmem='ps auxf | sort -nr -k 4'
-alias pscpu='ps auxf | sort -nr -k 3'
-
-# Merge Xresources
-alias merge='xrdb -merge ~/.Xresources'
-
-# git
-alias addup='git add -u'
-alias addall='git add .'
-alias branch='git branch'
-alias checkout='git checkout'
-alias clone='git clone'
-alias commit='git commit -m'
-alias fetch='git fetch'
-alias pull='git pull origin'
-alias push='git push origin'
-alias stat='git status'  # 'status' is protected name so using 'stat' instead
-alias tag='git tag'
-alias newtag='git tag -a'
-
-# get error messages from journalctl
-alias jctl="journalctl -p 3 -xb"
-
-# gpg encryption
-# verify signature for isos
-alias gpg-check="gpg2 --keyserver-options auto-key-retrieve --verify"
-# receive the key of a developer
-alias gpg-retrieve="gpg2 --keyserver-options auto-key-retrieve --receive-keys"
-
-# youtube-dl
-alias yta-aac="youtube-dl --extract-audio --audio-format aac "
-alias yta-best="youtube-dl --extract-audio --audio-format best "
-alias yta-flac="youtube-dl --extract-audio --audio-format flac "
-alias yta-m4a="youtube-dl --extract-audio --audio-format m4a "
-alias yta-mp3="youtube-dl --extract-audio --audio-format mp3 "
-alias yta-opus="youtube-dl --extract-audio --audio-format opus "
-alias yta-vorbis="youtube-dl --extract-audio --audio-format vorbis "
-alias yta-wav="youtube-dl --extract-audio --audio-format wav "
-alias ytv-best="youtube-dl -f bestvideo+bestaudio "
-
-# switch between shells
-# I do not recommend switching default SHELL from bash.
-alias tobash="sudo chsh $USER -s /bin/bash && echo 'Now log out.'"
-alias tozsh="sudo chsh $USER -s /bin/zsh && echo 'Now log out.'"
-alias tofish="sudo chsh $USER -s /bin/fish && echo 'Now log out.'"
-
-# termbin
-alias tb="nc termbin.com 9999"
-
-# the terminal rickroll
-alias rr='curl -s -L https://raw.githubusercontent.com/keroserene/rickrollrc/master/roll.sh | bash'
-
-# Unlock LBRY tips
-alias tips='lbrynet txo spend --type=support --is_not_my_input --blocking'
-
-### DTOS ###
-# Copy/paste all content of /etc/dtos over to home folder. A backup of config is created. (Be careful running this!)
-alias dtoscopy='[ -d ~/.config ] || mkdir ~/.config && cp -Rf ~/.config ~/.config-backup-$(date +%Y.%m.%d-%H.%M.%S) && cp -rf /etc/dtos/* ~'
-# Backup contents of /etc/dtos to a backup folder in $HOME.
-alias dtosbackup='cp -Rf /etc/dtos ~/dtos-backup-$(date +%Y.%m.%d-%H.%M.%S)'
-
-
-### BASH INSULTER (works in zsh though) ###
-if [ -f /etc/bash.command-not-found ]; then
-    . /etc/bash.command-not-found
-fi
-
-if command -v colordiff > /dev/null 2>&1; then
-    alias diff="colordiff -Nuar"
-else
-    alias diff="diff -Nuar"
-fi
-
-## get top process eating memory
-alias psmem='ps auxf | sort -nr -k 4'
-alias psmem10='ps auxf | sort -nr -k 4 | head -10'
-
-## get top process eating cpu ##
-alias pscpu='ps auxf | sort -nr -k 3'
-alias pscpu10='ps auxf | sort -nr -k 3 | head -10'
-
-# Safetynets
-# do not delete / or prompt if deleting more than 3 files at a time #
-# alias rm='rm -I --preserve-root'
-
-# package management
-# alias update='sudo apt-get update'
-# alias upgrade='sudo apt-get update && sudo apt-get dist-upgrade'
-# alias install='sudo apt-get install'
-
-##### Extract Functions
-
-extract () {
-  if [ -f $1 ] ; then
-    case $1 in
-      *.tar.bz2)   tar xjvf $1    ;;
-      *.tar.gz)    tar xzvf $1    ;;
-      *.bz2)       bzip2 -d $1    ;;
-      *.rar)       unrar2dir $1    ;;
-      *.gz)        gunzip $1    ;;
-      *.tar)       tar xf $1    ;;
-      *.tbz2)      tar xjf $1    ;;
-      *.tgz)       tar xzf $1    ;;
-      *.zip)       unzip2dir $1     ;;
-      *.Z)         uncompress $1    ;;
-      *.7z)        7z x $1    ;;
-      *.ace)       unace x $1    ;;
-      *)           echo "'$1' cannot be extracted via extract()"   ;;
-    esac
-  else
-    echo "'$1' is not a valid file"
-  fi
-}
-# SAVEIFS=$IFS
-# IFS=$(echo -en "\n\b")
-# function extract {
-#  if [ -z "$1" ]; then
-#     # display usage if no parameters given
-#     echo "Usage: extract <path/file_name>.<zip|rar|bz2|gz|tar|tbz2|tgz|Z|7z|xz|ex|tar.bz2|tar.gz|tar.xz>"
-#     echo "       extract <path/file_name_1.ext> [path/file_name_2.ext] [path/file_name_3.ext]"
-#  else
-#     for n in "$@"
-#     do
-#       if [ -f "$n" ] ; then
-#           case "${n%,}" in
-#             *.cbt|*.tar.bz2|*.tar.gz|*.tar.xz|*.tbz2|*.tgz|*.txz|*.tar)
-#                          tar xvf "$n"       ;;
-#             *.lzma)      unlzma ./"$n"      ;;
-#             *.bz2)       bunzip2 ./"$n"     ;;
-#             *.cbr|*.rar)       unrar x -ad ./"$n" ;;
-#             *.gz)        gunzip ./"$n"      ;;
-#             *.cbz|*.epub|*.zip)       unzip ./"$n"       ;;
-#             *.z)         uncompress ./"$n"  ;;
-#             *.7z|*.arj|*.cab|*.cb7|*.chm|*.deb|*.dmg|*.iso|*.lzh|*.msi|*.pkg|*.rpm|*.udf|*.wim|*.xar)
-#                          7z x ./"$n"        ;;
-#             *.xz)        unxz ./"$n"        ;;
-#             *.exe)       cabextract ./"$n"  ;;
-#             *.cpio)      cpio -id < ./"$n"  ;;
-#             *.cba|*.ace)      unace x ./"$n"      ;;
-#             *)
-#                          echo "extract: '$n' - unknown archive method"
-#                          return 1
-#                          ;;
-#           esac
-#       else
-#           echo "'$n' - file does not exist"
-#           return 1
-#       fi
-#     done
-# fi
-# }
-# IFS=$SAVEIFS
 
 
 ##### shopt
@@ -511,3 +320,6 @@ setopt promptsubst
 # tabtab source for packages
 # uninstall by removing these lines
 [[ -f ~/.config/tabtab/zsh/__tabtab.zsh ]] && . ~/.config/tabtab/zsh/__tabtab.zsh || true
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion

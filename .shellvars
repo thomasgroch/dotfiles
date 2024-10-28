@@ -22,7 +22,7 @@ export MY_CODE=$HOME/dev
 export MY_BLOG=$HOME/blog
 export MY_DOWNLOADS=$HOME/Downloads
 export MY_DOCUMENTS=$HOME/Documents
-export BARE_DOTFILES=$HOME/.bare-dotfiles
+export BARE_DOTFILES=$HOME/.dotfiles-bare
 
 # Tool paths
 # Remove forward-char widgets from ACCEPT

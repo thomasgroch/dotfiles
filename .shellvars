@@ -60,7 +60,7 @@ export PASSWORD_STORE_DIR=$HOME/.password-store
 export PASSWORD_STORE_ENABLE_EXTENSIONS=true
 export PASSWORD_STORE_EXTENSIONS_DIR=$USR_PATH/lib/password-store/extensions
 
-[ -d $PASSWORD_STORE_DIR ] && source <(gopass shell/vars)
+[ -d "/media/tg/SAFE" ] && [ -d $PASSWORD_STORE_DIR ] && source <(gopass shell/vars)
 
 export OS="$(uname -s)"
 

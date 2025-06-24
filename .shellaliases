@@ -28,10 +28,12 @@ expect {
 expect eof
 EOF
 }
-
 function sync_all(){
     rsync -rtavuc --delete --progress ${1}/.[^.]* ${2}
 }
+
+alias sail='sh $([ -f sail ] && echo sail || echo vendor/bin/sail)'
+alias s='said $@'
 
 # Apps
 alias a.diff="$EDITOR_DIFF"
@@ -118,6 +120,7 @@ alias port-forward-list="sudo pfctl -s nat"
 # Flush the DNS on Mac
 alias dnsflush='dscacheutil -flushcache;sudo killall -HUP mDNSResponder'
 
+alias audio='ssh cr@10.147.17.120 "arecord -f cd -q -" | sox -t wav - -t wav - gain +25 | aplay -q -'
 # For HTTP connection set the following alias:
 alias dockerx="docker -H=174.138.49.215:2375"
 
@@ -217,9 +220,9 @@ alias mysql.start="launchctl load -w ~/Library/LaunchAgents/homebrew.mxcl.mysql.
 alias mysql.stop="launchctl unload -w ~/Library/LaunchAgents/homebrew.mxcl.mysql.plist"
 
 # Make some possibly destructive commands more interactive.
-alias rm='rm -i'
-alias mv='mv -i'
-alias cp='cp -i'
+# alias rm='rm -i'
+# alias mv='mv -i'
+# alias cp='cp -i'
 
 alias nah="git reset --hard && git clean -df"
 alias neofetch="neofetch --config none"
@@ -577,6 +580,10 @@ alias dtoscopy='[ -d ~/.config ]||mkdir ~/.config && cp -Rf ~/.config ~/.config-
 # Backup contents of /etc/dtos to a backup folder in $HOME.
 alias dtosbackup='cp -Rf /etc/dtos ~/dtos-backup-$(date +%Y.%m.%d-%H.%M.%S)'
 
+# Future git commit with flexible time offset (in hours)
+# Usage: futurecommit 8 "Commit message"
+# This will set the commit time 8 hours in the future
+alias futurecommit='f(){ export GIT_AUTHOR_DATE="$(date -d "+$1 hours" "+%Y-%m-%d %H:%M:%S")" && export GIT_COMMITTER_DATE="$GIT_AUTHOR_DATE" && git commit -m "${@:2}"; unset -f f; }; f'
 
 ### BASH INSULTER (works in zsh though) ###
 if [ -f /etc/bash.command-not-found ]; then
@@ -605,3 +612,8 @@ alias pscpu10='ps auxf|sort -nr -k 3|head -10'
 # alias update='sudo apt-get update'
 # alias upgrade='sudo apt-get update && sudo apt-get dist-upgrade'
 # alias install='sudo apt-get install'
+
+rpg () {
+    rpg-cli "$@"
+    cd "$(rpg-cli pwd)"
+}

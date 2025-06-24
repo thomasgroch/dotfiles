@@ -36,6 +36,11 @@ alias run="npm run $@"
 # futurecommit "1h30m" "Your commit message"
 alias futurecommit='export GIT_AUTHOR_DATE="$(date -d "1 day" --utc)" && export GIT_COMMITTER_DATE="$GIT_AUTHOR_DATE" && git commit -m'
 
+mosh() {
+  while ! command mosh "$@"; do
+    sleep 5
+  done
+}
 
 alias vizgit="
 gource \
@@ -218,6 +223,7 @@ plugins+=(colorize)
 plugins+=(history)
 plugins+=(cp)
 plugins+=(zsh-syntax-highlighting)
+fpath=(~/.zsh/completions $fpath)
 
 source $ZSH/oh-my-zsh.sh
 source ~/.zprofile
@@ -324,3 +330,39 @@ setopt promptsubst
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+export GPG_TTY=$(tty)
+
+# Autocomplete.sh
+#source autocomplete enable
+
+# Autocomplete.sh CLI
+#complete -F _autocompletesh_cli autocomplete
+
+
+
+alias ollamaui="docker run -d --network=host -v open-webui:/app/backend/data -e OLLAMA_BASE_URL=http://127.0.0.1:11434 --name open-webui --restart always ghcr.io/open-webui/open-webui:cuda"
+export PATH="/home/tg/.config/herd-lite/bin:$PATH"
+export PHP_INI_SCAN_DIR="/home/tg/.config/herd-lite/bin:$PHP_INI_SCAN_DIR"
+. "/home/tg/.deno/env"
+# Initialize zsh completions (added by deno install script)
+autoload -Uz compinit
+compinit
+# bun completions
+[ -s "/home/tg/.bun/_bun" ] && source "/home/tg/.bun/_bun"
+
+# bun
+export BUN_INSTALL="$HOME/.bun"
+export PATH="$BUN_INSTALL/bin:$PATH"
+
+# Added by LM Studio CLI (lms)
+export PATH="$PATH:/home/tg/.lmstudio/bin"
+# End of LM Studio CLI section
+
+
+# pnpm
+export PNPM_HOME="/home/tg/.local/share/pnpm"
+case ":$PATH:" in
+  *":$PNPM_HOME:"*) ;;
+  *) export PATH="$PNPM_HOME:$PATH" ;;
+esac
+# pnpm end

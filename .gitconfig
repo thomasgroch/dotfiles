@@ -303,3 +303,5 @@
     recurseSubmodules = true
 [submodule]
     fetchJobs = 5
+[user]
+	signingkey = 62391C2A7551540F
